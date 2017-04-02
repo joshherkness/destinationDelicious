@@ -40,7 +40,7 @@ class SignIn extends Component {
   render() {
     return (
       <View style={ styles.container }>
-        <TextInput autoCapitalize='none' style={ styles.email } value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
+        <TextInput underlineColorAndroid='transparent' autoCapitalize='none' style={ styles.email } value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
         <TextInput style={ styles.password } value={ this.state.password }  placeholder="Password" onChangeText={ (password) => this.setState({password}) } secureTextEntry={ true }/>
         <Button onPress={ this.attemptLogin } title="Sign In" color="#FDD835"/>
         <View style={{ flexDirection: 'row' }}>
@@ -63,21 +63,27 @@ const styles = StyleSheet.create({
   },
 
   email: {
-    height: 40,
+    alignSelf: 'stretch',
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
+    height: 40,
+    fontSize: 13,
     marginBottom: 10,
-    paddingLeft: 10
+    paddingLeft: 10,
+    textAlign: 'center'
   },
 
   password: {
-    height: 40,
+    alignSelf: 'stretch',
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
+    fontSize: 13,
+    height: 40,
     marginBottom: 10,
-    paddingLeft: 10
+    paddingLeft: 10,
+    textAlign: 'center'
   },
 
   yellowFont: {
