@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, View, Image } from 'react-native';
+import * as firebase from "firebase";
 
 class SignUp extends Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class SignUp extends Component {
     let pass = this.state.password
     email.toLowerCase()
     pass.toLowerCase()
-    this.props.firebase.auth().createUserWithEmailAndPassword(email, pass)
+    firebase.auth().createUserWithEmailAndPassword(email, pass)
     .then(function() {
       Alert.alert("succes")
     })
