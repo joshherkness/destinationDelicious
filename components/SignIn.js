@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, View } from 'react-native';
+import { Alert, AppRegistry, Navigator, StyleSheet, Button, Text, TextInput, View } from 'react-native';
+import * as firebase from "firebase";
 
 class SignIn extends Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class SignIn extends Component {
     let pass = this.state.password
     email.toLowerCase()
     pass.toLowerCase()
-    this.props.firebase.auth().signInWithEmailAndPassword(email, pass)
+    firebase.auth().signInWithEmailAndPassword(email, pass)
     .then(function() {
       Alert.alert("success")
     })
@@ -68,10 +69,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 3,
     height: 40,
-    fontSize: 13,
     marginBottom: 10,
-    paddingLeft: 10,
-    textAlign: 'left'
+    paddingLeft: 10
   },
 
   password: {
@@ -79,11 +78,9 @@ const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
-    fontSize: 13,
     height: 40,
     marginBottom: 10,
-    paddingLeft: 10,
-    textAlign: 'left'
+    paddingLeft: 10
   },
 
   yellowFont: {

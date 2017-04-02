@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, View, Image } from 'react-native';
+import * as firebase from "firebase";
 
 class SignUp extends Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class SignUp extends Component {
     let pass = this.state.password
     email.toLowerCase()
     pass.toLowerCase()
-    this.props.firebase.auth().createUserWithEmailAndPassword(email, pass)
+    firebase.auth().createUserWithEmailAndPassword(email, pass)
     .then(function() {
       Alert.alert("succes")
     })
@@ -64,26 +65,22 @@ const styles = StyleSheet.create({
 
   email: {
     alignSelf: 'stretch',
-    height: 40,
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
+    height: 40,
     marginBottom: 10,
-    fontSize: 13,
-    paddingLeft: 10,
-    textAlign: 'left'
+    paddingLeft: 10
   },
 
   password: {
     alignSelf: 'stretch',
-    height: 40,
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
+    height: 40,
     marginBottom: 10,
-    fontSize: 13,
-    paddingLeft: 10,
-    textAlign: 'left'
+    paddingLeft: 10
   },
 
   yellowFont: {
