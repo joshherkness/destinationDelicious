@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { AppRegistry, Alert, StyleSheet, Text, View } from 'react-native';
 import SignIn from './SignIn'
 import SignUp from './SignUp'
-import { Root } from '../config/router';
 
 class Authentication extends Component {
   constructor() {
@@ -57,9 +56,9 @@ const styles = StyleSheet.create({
   },
 
   welcome: {
-    fontSize: 20,
+    fontSize: 25,
     textAlign: 'center',
-    margin: 10,
+    marginBottom: 20,
   }
 });
 

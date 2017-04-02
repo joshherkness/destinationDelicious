@@ -65,26 +65,22 @@ const styles = StyleSheet.create({
 
   email: {
     alignSelf: 'stretch',
-    height: 40,
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
+    height: 40,
     marginBottom: 10,
-    fontSize: 13,
-    paddingLeft: 10,
-    textAlign: 'left'
+    paddingLeft: 10
   },
 
   password: {
     alignSelf: 'stretch',
-    height: 40,
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
+    height: 40,
     marginBottom: 10,
-    fontSize: 13,
-    paddingLeft: 10,
-    textAlign: 'left'
+    paddingLeft: 10
   },
 
   yellowFont: {

@@ -69,10 +69,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 3,
     height: 40,
-    fontSize: 13,
     marginBottom: 10,
-    paddingLeft: 10,
-    textAlign: 'left'
+    paddingLeft: 10
   },
 
   password: {
@@ -80,11 +78,9 @@ const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
-    fontSize: 13,
     height: 40,
     marginBottom: 10,
-    paddingLeft: 10,
-    textAlign: 'left'
+    paddingLeft: 10
   },
 
   yellowFont: {
