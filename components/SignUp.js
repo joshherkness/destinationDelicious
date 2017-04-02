@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 13,
     paddingLeft: 10,
-    textAlign: 'center'
+    textAlign: 'left'
   },
 
   password: {
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 13,
     paddingLeft: 10,
-    textAlign: 'center'
+    textAlign: 'left'
   },
 
   yellowFont: {
