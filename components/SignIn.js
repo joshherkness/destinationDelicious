@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, AppRegistry, Button, Text, TextInput, View } from 'react-native';
+import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, View } from 'react-native';
 
 class SignIn extends Component {
   constructor(props) {
@@ -39,18 +39,57 @@ class SignIn extends Component {
 
   render() {
     return (
-      <View style={{ height: 300, width: 200, flexDirection: 'column', paddingTop: 5 }}>
-        <TextInput autoCapitalize='none' style={{height: 25, borderColor: '#E0E0E0', borderWidth: 1, borderRadius: 2, marginBottom: 20, textAlign: 'center' }} value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
-        <TextInput style={{height: 25, borderColor: '#E0E0E0', borderWidth: 1, borderRadius: 2, textAlign: 'center' }} value={ this.state.password }  placeholder="Password" onChangeText={ (password) => this.setState({password}) } secureTextEntry={ true }/>
-        <Button onPress={ this.attemptLogin } title="Sign In" color="#FDD835" accessibilityLabel="Log in to destination delicious" />
+      <View style={ styles.container }>
+        <TextInput autoCapitalize='none' style={ styles.email } value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
+        <TextInput style={ styles.password } value={ this.state.password }  placeholder="Password" onChangeText={ (password) => this.setState({password}) } secureTextEntry={ true }/>
+        <Button onPress={ this.attemptLogin } title="Sign In" color="#FDD835"/>
         <View style={{ flexDirection: 'row' }}>
-          <Text style={{ marginTop: 20, width: 215, height: 20 }}>Don&#39;t have an account?
-            <Text onPress={ this.goToSignIn } style={{ color: '#81D4FA', fontWeight: 'bold' }}> Sign up! </Text>
+          <Text style={ styles.greyFont }>Don&#39;t have an account?
+            <Text onPress={ this.goToSignIn } style={ styles.yellowFont }> Sign Up</Text>
           </Text>
         </View>
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+     height: 300,
+     width: 280,
+     flexDirection: 'column',
+     alignItems: 'center',
+     paddingTop: 5
+  },
+
+  email: {
+    height: 40,
+    borderColor: '#E0E0E0',
+    borderWidth: 1,
+    borderRadius: 3,
+    marginBottom: 10,
+    paddingLeft: 10
+  },
+
+  password: {
+    height: 40,
+    borderColor: '#E0E0E0',
+    borderWidth: 1,
+    borderRadius: 3,
+    marginBottom: 10,
+    paddingLeft: 10
+  },
+
+  yellowFont: {
+    color: "#FDD835",
+    fontWeight: 'bold'
+  },
+
+  greyFont: {
+    marginTop: 10,
+    height: 20,
+    color: '#D8D8D8'
+  }
+});
 
 module.exports = SignIn

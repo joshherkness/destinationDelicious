@@ -12,12 +12,12 @@ import SignUp from './components/SignUp'
 
 //Initialize Firebase
 const firebaseConfig = {
-  apiKey: ""
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: ""
+  apiKey: "AIzaSyCdndiS6rlCzlORIn5oQ4m5oPL9jsV0AhE",
+  authDomain: "destination-delicious.firebaseapp.com",
+  databaseURL: "https://destination-delicious.firebaseio.com",
+  projectId: "destination-delicious",
+  storageBucket: "destination-delicious.appspot.com",
+ messagingSenderId: "26242783843"
 }
 
 const firebaseApp = firebase.initializeApp(firebaseConfig)
@@ -32,7 +32,7 @@ export default class destinationDelicious extends Component {
 
   verifyAuthState = (verify) => {
     this.setState({
-      signUp: verify 
+      signUp: verify
     })
   }
 
@@ -46,7 +46,7 @@ export default class destinationDelicious extends Component {
           </Text>
           <SignUp firebase={ firebaseApp } verifyAuthState={ this.verifyAuthState } />
         </View>
-      ) 
+      )
     } else {
       return (
         <View style={styles.container}>
