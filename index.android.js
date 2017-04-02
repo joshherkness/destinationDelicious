@@ -5,28 +5,62 @@
  */
 
 import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import { AppRegistry, Alert, StyleSheet, Text, View } from 'react-native';
+import * as firebase from 'firebase';
+import SignIn from './components/SignIn'
+import SignUp from './components/SignUp'
+
+//Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCdndiS6rlCzlORIn5oQ4m5oPL9jsV0AhE",
+  authDomain: "destination-delicious.firebaseapp.com",
+  databaseURL: "https://destination-delicious.firebaseio.com",
+  projectId: "destination-delicious",
+  storageBucket: "destination-delicious.appspot.com",
+ messagingSenderId: "26242783843"
+}
+
+const firebaseApp = firebase.initializeApp(firebaseConfig)
 
 export default class destinationDelicious extends Component {
+  constructor() {
+    super()
+    this.state = {
+      signUp: false
+    }
+  }
+
+  verifyAuthState = (verify) => {
+    this.setState({
+      signUp: verify
+    })
+  }
+
+  checkSignIn() {
+    if(this.state.signUp === true) {
+      return (
+        <View style={styles.container}>
+          <Text style={ styles.welcome }>
+          Welcome to Destination Delicious!
+          </Text>
+          <SignUp firebase={ firebaseApp } verifyAuthState={ this.verifyAuthState } />
+        </View>
+      )
+    } else {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.welcome}>
+            Welcome to Destination Delicious!
+          </Text>
+          <SignIn firebase={ firebaseApp } verifyAuthState={ this.verifyAuthState } />
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
-      </View>
+      this.checkSignIn()
     );
   }
 }
@@ -36,18 +70,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#FFF',
   },
+
   welcome: {
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  }
 });
 
 AppRegistry.registerComponent('destinationDelicious', () => destinationDelicious);

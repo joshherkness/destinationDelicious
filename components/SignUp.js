@@ -63,21 +63,27 @@ const styles = StyleSheet.create({
   },
 
   email: {
+    alignSelf: 'stretch',
     height: 40,
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
     marginBottom: 10,
-    paddingLeft: 10
+    fontSize: 13,
+    paddingLeft: 10,
+    textAlign: 'center'
   },
 
   password: {
+    alignSelf: 'stretch',
     height: 40,
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
     marginBottom: 10,
-    paddingLeft: 10
+    fontSize: 13,
+    paddingLeft: 10,
+    textAlign: 'center'
   },
 
   yellowFont: {
