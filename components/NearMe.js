@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View} from 'react-native';
 
 class NearMe extends Component {
   constructor(props) {
@@ -9,7 +9,7 @@ class NearMe extends Component {
   render() {
     return (
       <View style={ styles.container }>
-        <Text style={ styles.greyFont }>NearMe</Text>
+        <Text style={ styles.bigFont }>Near Me Screen</Text>
       </View>
     )
   }
@@ -22,10 +22,10 @@ const styles = StyleSheet.create({
      paddingTop: 5
   },
 
-  greyFont: {
+  bigFont: {
     marginTop: 10,
-    color: '#000000',
-    fontSize: 40
+    color: '#000',
+    fontSize: 30
   }
 });
 

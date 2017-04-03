@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View} from 'react-native';
 
-class Favorites extends Component {
+class CreateReport extends Component {
+
+  static navigationOptions = {
+    title: 'Create Report',
+    header: {
+      tintColor: '#000'
+    }
+  };
+
   constructor(props) {
     super(props);
   }
@@ -9,7 +17,7 @@ class Favorites extends Component {
   render() {
     return (
       <View style={ styles.container }>
-        <Text style={ styles.bigFont }>Favorites Screen</Text>
+        <Text style={ styles.bigFont }>Create Report Screen</Text>
       </View>
     )
   }
@@ -29,4 +37,4 @@ const styles = StyleSheet.create({
   }
 });
 
-module.exports = Favorites
+module.exports = CreateReport

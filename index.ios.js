@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { AppRegistry } from 'react-native';
 import * as firebase from "firebase";
 import Firebase from "./config/firebase";
-import Home from './components/Home'
 import Authentication from './components/Authentication'
+import { Root } from './config/router';
 
 export default class destinationDelicious extends Component {
   constructor() {
@@ -38,7 +38,7 @@ export default class destinationDelicious extends Component {
       )
     } else if (this.state.loggedIn) {
       return(
-        <Home/>
+        <Root/>
       );
     } else {
       return(
