@@ -9,22 +9,16 @@ export default class destinationDelicious extends Component {
   constructor() {
     super();
     this.state = {
-      userLoaded: false,
-      loggedIn: false,
-      user: null
+      user: undefined
     }
     Firebase.initialise();
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.setState({
-          userLoaded: true,
-          loggedIn: true,
           user: user
         })
       } else {
         this.setState({
-          userLoaded: true,
-          loggedIn: false,
           user: null
         })
       }
@@ -32,11 +26,11 @@ export default class destinationDelicious extends Component {
   }
 
   render() {
-    if (!this.state.userLoaded) {
+    if (this.state.user === undefined) {
       return(
         null
       )
-    } else if (this.state.loggedIn) {
+    } else if (this.state.user) {
       return(
         <Home/>
       );
