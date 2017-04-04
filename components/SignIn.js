@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, AppRegistry, Navigator, StyleSheet, Button, Text, TextInput, View } from 'react-native';
-import * as firebase from "firebase";
+import * as firebase from 'firebase';
 
 class SignIn extends Component {
   constructor(props) {

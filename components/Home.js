@@ -1,22 +1,42 @@
 import React, { Component } from 'react';
-import { AppRegistry, StyleSheet, Text, View, Button } from 'react-native';
-import * as firebase from "firebase";
+import { StyleSheet, Button} from 'react-native';
+import { HomeTabs } from '../config/router';
+import * as firebase from 'firebase';
 
 class Home extends Component {
+
+  static navigationOptions = {
+      title: 'Home',
+      header: ({ navigate, state }) => ({
+        tintColor: '#000',
+        right: (
+          <Button color='#000' title='Report' onPress={() => navigate('CreateReport')}/>
+        ),
+        left: (
+          <Button color='#f00' title='Sign Out' onPress={() => state.params.signOut() }/>
+        )
+      }),
+    };
+
   constructor(props) {
     super(props);
   }
 
-  signOut = () => {
+  signOut() {
     firebase.auth().signOut()
+  }
+
+  componentDidMount() {
+    this.props.navigation.setParams({ signOut: this.signOut });
+  }
+
+  create = () => {
+    this.props.navigation.navigate('CreateReport')
   }
 
   render() {
     return (
-      <View style={ styles.container }>
-        <Text style={ styles.greyFont }>Home</Text>
-        <Button onPress={ this.signOut } title="Sign Out" color="#FF0000"/>
-      </View>
+      <HomeTabs/>
     )
   }
 }
