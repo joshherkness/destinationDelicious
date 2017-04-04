@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 
 class NearMe extends Component {
+
+  static navigationOptions = {
+    tabBar: {
+      label: 'Carts Near Me'
+    }
+  }
+
   constructor(props) {
     super(props);
   }
@@ -9,7 +16,7 @@ class NearMe extends Component {
   render() {
     return (
       <View style={ styles.container }>
-        <Text style={ styles.bigFont }>Near Me Screen</Text>
+        <Text style={ styles.bigFont }>Carts Near Me Screen</Text>
       </View>
     )
   }

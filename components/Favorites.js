@@ -2,6 +2,13 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 class Favorites extends Component {
+
+  static navigationOptions = {
+    tabBar: {
+      label: 'Favorite Carts'
+    }
+  }
+
   constructor(props) {
     super(props);
   }
@@ -9,7 +16,7 @@ class Favorites extends Component {
   render() {
     return (
       <View style={ styles.container }>
-        <Text style={ styles.bigFont }>Favorites Screen</Text>
+        <Text style={ styles.bigFont }>Favorite Carts Screen</Text>
       </View>
     )
   }

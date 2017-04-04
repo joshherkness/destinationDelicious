@@ -43,7 +43,7 @@ class SignIn extends Component {
       <View style={ styles.container }>
         <TextInput underlineColorAndroid='transparent' autoCapitalize='none' style={ styles.email } value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
         <TextInput style={ styles.password } value={ this.state.password }  placeholder="Password" onChangeText={ (password) => this.setState({password}) } secureTextEntry={ true }/>
-        <Button onPress={ this.attemptLogin } title="Sign In" color="#FDD835"/>
+        <Button onPress={ this.attemptLogin } title="Sign In" color="#55acee"/>
         <View style={{ flexDirection: 'row' }}>
           <Text style={ styles.greyFont }>Don&#39;t have an account?
             <Text onPress={ this.goToSignIn } style={ styles.yellowFont }> Sign Up</Text>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
 
   yellowFont: {
-    color: "#FDD835",
+    color: "#55acee",
     fontWeight: 'bold'
   },
 
