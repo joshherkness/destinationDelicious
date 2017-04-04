@@ -8,12 +8,15 @@ class Home extends Component {
   static navigationOptions = {
       title: 'Home',
       header: ({ navigate, state }) => ({
-        tintColor: '#000',
+        tintColor: '#55acee',
+        titleStyle: {
+          color: '#000'
+        },
         right: (
-          <Button color='#000' title='Report' onPress={() => navigate('CreateReport')}/>
+          <Button color='#55acee' title='Report' onPress={() => navigate('CreateReport')}/>
         ),
         left: (
-          <Button color='#f00' title='Sign Out' onPress={() => state.params.signOut() }/>
+          <Button color='#55acee' title='Sign Out' onPress={() => state.params.signOut() }/>
         )
       }),
     };

@@ -6,23 +6,15 @@ import Home from '../components/Home';
 import CreateReport from '../components/CreateReport';
 
 export const HomeTabs = TabNavigator({
-  Favorites: {
-    screen: Favorites
-  },
-  NearMe: {
-    screen: NearMe,
-  },
+  NearMe: { screen: NearMe },
+  Favorites: { screen: Favorites }
 }, {
   tabBarOptions: {
-    activeTintColor: '#000',
-  },
+    activeTintColor: '#55acee'
+  }
 });
 
 export const Root = StackNavigator({
-  Home: {
-    screen: Home
-  },
-  CreateReport: {
-    screen: CreateReport
-  }
+  Home: { screen: Home },
+  CreateReport: { screen: CreateReport }
 });
