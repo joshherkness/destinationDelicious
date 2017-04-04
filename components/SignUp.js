@@ -7,19 +7,23 @@ class SignUp extends Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     }
   }
 
   attemptLogin = () => {
-    console.log(this.props)
-    let email = this.state.username
+    let email = this.state.username.toLowerCase()
     let pass = this.state.password
-    email.toLowerCase()
-    pass.toLowerCase()
+    let confirmPassword = this.state.confirmPassword
+    // Check to make sure the passwords are the same length
+    if (pass != confirmPassword) {
+      Alert.alert('The passwords must be the same')
+      return
+    }
     firebase.auth().createUserWithEmailAndPassword(email, pass)
     .then(function() {
-      Alert.alert("succes")
+      Alert.alert("success")
     })
     .catch(function(error) {
       let errorCode = error.code
@@ -29,7 +33,6 @@ class SignUp extends Component {
       } else {
         Alert.alert(errorMessage)
       }
-      console.log(error)
     }
    )
   }
@@ -43,6 +46,7 @@ class SignUp extends Component {
       <View style={ styles.container }>
         <TextInput autoCapitalize='none' style={ styles.email } value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
         <TextInput style={ styles.password } value={ this.state.password }  placeholder="Password" onChangeText={ (password) => this.setState({password}) } secureTextEntry={ true }/>
+        <TextInput style={ styles.password } value={ this.state.confirmPassword }  placeholder="Confirm Password" onChangeText={ (confirmPassword) => this.setState({confirmPassword}) } secureTextEntry={ true }/>
         <Button onPress={ this.attemptLogin } title="Sign Up" color="#55acee"/>
         <View style={{ flexDirection: 'row' }}>
           <Text style={ styles.greyFont }>Already have an account?
