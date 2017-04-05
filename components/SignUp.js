@@ -22,9 +22,9 @@ class SignUp extends Component {
       return
     }
     firebase.auth().createUserWithEmailAndPassword(email, pass)
-    .then(function() {
-      Alert.alert("success")
-    })
+    .then(function(user) {
+      this.writeUserData(user.uid, email)
+    }.bind(this))
     .catch(function(error) {
       let errorCode = error.code
       let errorMessage = error.message;
@@ -33,8 +33,13 @@ class SignUp extends Component {
       } else {
         Alert.alert(errorMessage)
       }
-    }
-   )
+    })
+  }
+
+  writeUserData(userId, email) {
+    firebase.database().ref('users/' + userId).set({
+      email: email
+    });
   }
 
   goToSignUp = () => {
