@@ -19,7 +19,7 @@ class Authentication extends Component {
   }
 
   checkSignIn() {
-    if(Object.is(this.state.signUp, true)) {
+    if(this.state.signUp === true) {
       return (
         <View style={styles.container}>
           <Text style={ styles.welcome }>
