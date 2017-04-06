@@ -40,6 +40,10 @@ class Home extends Component {
     this.props.navigation.navigate('CreateReport')
   }
 
+  create = () => {
+    this.props.navigation.navigate('AccountView')
+  }
+
   render() {
     return (
       <HomeTabs/>
