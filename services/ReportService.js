@@ -37,10 +37,10 @@ class ReportService {
    * @param {Function} moved
    * @param {Function} removed
    */
-  static getReports(center, radius, entered, exited, moved) {
+  static getReports(params, entered, exited, moved) {
     var geoQuery = geofireRef.query({
-      center: [center.latitude, center.longitude],
-      radius: radius
+      center: [params.latitude, params.longitude],
+      radius: params.radius
     });
 
     var onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, location, distance) {
