@@ -11,7 +11,6 @@ export default class destinationDelicious extends Component {
     this.state = {
       user: undefined
     }
-    Firebase.initialise();
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.setState({
