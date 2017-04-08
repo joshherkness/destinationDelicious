@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ListView, ScrollView, Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
-import ParallaxScrollView from 'react-native-parallax-scroll-view'
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
+import ReportService from '../services/ReportService';
 
 class NearMe extends Component {
 
@@ -16,52 +17,54 @@ class NearMe extends Component {
 
     // Create the initial state for component.
     this.state = {
+      searchRadius: 1,
       currentRegion: null,
       reports: [],
-      reportsDataSource: null
+      reportsDataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     }
   }
 
   componentDidMount() {
-
-    // Data source used for the [ListView]
-    const dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-
-    // Attempt to retrieve the reporters current location
+    
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        position.coords.longitudeDelta = 0;
-        position.coords.latitudeDelta = 0;
+      navigator.geolocation.watchPosition((position) => {
+        let longitude = position.coords.longitude;
+        let latitude = position.coords.latitude;
+
         this.setState({
           currentRegion: {
-            longitude: position.coords.longitude,
-            latitude: position.coords.latitude,
+            longitude: longitude,
+            latitude: latitude,
             longitudeDelta: LONGITUDE_DELTA,
             latitudeDelta: LATITUDE_DELTA
           }
+        });
+
+        ReportService.getReports({longitude: longitude, latitude: latitude, radius: 1}, (report) => {
+          this.addReport(report);
+        }, (report) => {
+          console.log("Report Exited");
+        }, (report) => {
+          console.log("Report Moved");
         });
       });
     } else {
       // User should be sent a message.
     }
+  }
 
-    // Temp set of reports data
-    let reports = [{
-      name: 'Tony\'s Tacos',
-      longitude: -83.3644252,
-      latitude: 42.790749999999996,
-      timestamp: 1491608569928
-    }, {
-      name: 'McBurgerking',
-      longitude: -83.3644252,
-      latitude: 42.790749999999996,
-      timestamp: 1491608569980
-    }]
-
+  addReport(report) {
     this.setState({
-      reports: reports,
-      reportsDataSource: dataSource.cloneWithRows(reports)
-    })
+      report: this.state.reports.concat(report),
+    });
+    refreshDataSource();
+  }
+
+  refreshDataSource() {
+    let reports = this.state.reports;
+    this.setState({
+      reportsDataSource: this.state.reportsDataSource.cloneWithRows(reports)
+    });
   }
 
   renderMapView(props) {
@@ -69,7 +72,9 @@ class NearMe extends Component {
       return <MapView
         key="mapview"
         style={styles.map}
-        initialRegion={this.state.currentRegion}>
+        initialRegion={this.state.currentRegion}
+        showsUserLocation={true}
+        followsUserLocation={true}>
         {this.state.reports.map((report, i) => (
           <MapView.Marker
             key={i}
@@ -77,6 +82,13 @@ class NearMe extends Component {
             coordinate={report}>
           </MapView.Marker>
         ))}
+        <MapView.Circle 
+          key="searchRadius"
+          center={this.state.currentRegion}
+          radius={this.state.searchRadius * 1609.34}
+          strokeColor="rgb(85, 172, 238)"
+          fillColor="rgba(85, 172, 238, 0.2)"
+        />
       </MapView>
     }
     return null;
@@ -142,7 +154,7 @@ const PARALLAX_HEADER_HEIGHT = 300;
 
 var { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.01;
+const LATITUDE_DELTA = 0.1;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const styles = StyleSheet.create({
