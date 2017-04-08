@@ -17,14 +17,14 @@ class NearMe extends Component {
 
     // Create the initial state for component.
     this.state = {
-      searchRadius: 1,
+      searchRadius: 2,
       currentRegion: null,
       reports: [],
       reportsDataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition((position) => {
@@ -40,7 +40,9 @@ class NearMe extends Component {
           }
         });
 
-        ReportService.getReports({longitude: longitude, latitude: latitude, radius: 1}, (report) => {
+        this.currentRequest = null;
+        this.clearReports();
+        this.currentRequest = ReportService.getReports({longitude: longitude, latitude: latitude, radius: this.state.searchRadius}, (report) => {
           this.addReport(report);
         }, (report) => {
           console.log("Report Exited");
@@ -55,9 +57,23 @@ class NearMe extends Component {
 
   addReport(report) {
     this.setState({
-      report: this.state.reports.concat(report),
+      reports: this.state.reports.concat(report),
     });
-    refreshDataSource();
+    this.refreshDataSource();
+  }
+
+  removeReport(report) {
+    var filteredReports = this.reports.filter((r) => r.id != report.id);
+    this.setState({
+      reports: filteredReports
+    });
+  }
+
+  clearReports() {
+    this.setState({
+      reports: []
+    });
+    this.refreshDataSource();
   }
 
   refreshDataSource() {
@@ -98,7 +114,6 @@ class NearMe extends Component {
     {
       if (this.state.reportsDataSource) {
         return <ListView
-          ref="ListView"
           dataSource={this.state.reportsDataSource}
           renderRow={(rowData) => (
             <View key={rowData} style={styles.row}>
