@@ -14,6 +14,7 @@ class NearMe extends Component {
   constructor(props) {
     super(props);
 
+    // Create the initial state for component.
     this.state = {
       currentRegion: null,
       reports: [],
@@ -22,6 +23,7 @@ class NearMe extends Component {
   }
 
   componentDidMount() {
+
     // Data source used for the [ListView]
     const dataSource = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -62,7 +64,7 @@ class NearMe extends Component {
     })
   }
 
-  mapView() {
+  renderMapView(props) {
     if (this.state.currentRegion) {
       return <MapView
         key="mapview"
@@ -80,35 +82,40 @@ class NearMe extends Component {
     return null;
   }
 
-  listView() {
-    if (this.state.reportsDataSource) {
-      return <ListView
-        ref="ListView"
-        dataSource={this.state.reportsDataSource}
-        renderRow={(rowData) => (
-          <View key={rowData} style={styles.row}>
-            <Text style={styles.rowText}>
-              {rowData.name}
-            </Text>
-          </View>
-        )}
-        renderScrollComponent={props => (
-          this.parallaxScrollView()
-        )}
-      />
+  renderListView({ renderScrollComponent }) {
+    {
+      if (this.state.reportsDataSource) {
+        return <ListView
+          ref="ListView"
+          dataSource={this.state.reportsDataSource}
+          renderRow={(rowData) => (
+            <View key={rowData} style={styles.row}>
+              <Text style={styles.rowText}>
+                {rowData.name}
+              </Text>
+            </View>
+          )}
+          renderScrollComponent={() =>
+            renderScrollComponent
+          }
+        />
+      }
+      return null;
     }
-    return null;
   }
 
-  parallaxScrollView() {
-    // Create and display the parallax scroll view.
+  /*
+   * Render a parallax scroll view with an optional 
+   * [renderForground].
+   */
+  renderParallaxScrollView({ renderForeground }) {
     return <ParallaxScrollView
       parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}
       backgroundSpeed={10}
       fadeOutForeground={false}
-      renderForeground={() => (
-        this.mapView()
-      )} />
+      renderForeground={() =>
+        renderForeground
+      } />
   }
 
   noReportsView() {
@@ -126,7 +133,7 @@ class NearMe extends Component {
       return null;
     }
 
-    return this.listView();
+    return this.renderListView({ renderScrollComponent: this.renderParallaxScrollView({ renderForeground: this.renderMapView() }) });
   }
 }
 
