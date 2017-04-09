@@ -4,6 +4,8 @@ import MapView from 'react-native-maps';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import Emoji from 'react-native-emoji';
 import ReportService from '../services/ReportService';
+import ReportRow from './ReportRow';
+
 
 class NearMe extends Component {
 
@@ -16,12 +18,14 @@ class NearMe extends Component {
   constructor(props) {
     super(props);
 
+    this._reports = []
+
     // Create the initial state for component.
     this.state = {
-      searchRadius: 1,
+      searchRadius: 1.60934,
       currentCoords: null,
       currentRegion: null,
-      reports: [],
+      reports: this._reports,
       reportsDataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }),
       isListeningForReports: false
     }
@@ -42,7 +46,7 @@ class NearMe extends Component {
           }
         });
         this.query = ReportService.getReports({ longitude: this.state.currentCoords.longitude, latitude: this.state.currentCoords.latitude, radius: this.state.searchRadius }, (report) => {
-          this.addReport(report);
+          this.receiveReport(report);
         }, (report) => {
           this.removeReport(report);
         }, (report) => {
@@ -50,49 +54,53 @@ class NearMe extends Component {
         });
       })
       navigator.geolocation.watchPosition((position) => {
-        this.handleCoordsChange(position.coords);
+        this.setCurrentCoords(position.coords);
       });
     } else {
       // User should be sent a message.
     }
   }
 
-  addReport(report) {
+  /*
+   * Used to set the value of [this.state.reports].
+   */
+  setReports(reports) {
+    this._reports = reports;
     this.setState({
-      reports: this.state.reports.concat(report),
-    });
-    this.refreshDataSource();
+      reports: reports,
+    }, () => this.setReportsDataSource(reports));
   }
 
-  removeReport(report) {
-    var filteredReports = this.reports.filter((r) => r.id != report.id);
-    this.setState({
-      reports: filteredReports
-    });
-    this.refreshDataSource();
-  }
-
-  updateReport(report) {
-    var filteredReports = this.reports.filter((r) => r.id == report.id)
-      .map((r) => report);
-    this.setState({
-      reports: filteredReports
-    });
-    this.refreshDataSource();
-  }
-
-  clearReports() {
-    this.setState({
-      reports: []
-    });
-    this.refreshDataSource();
-  }
-
-  refreshDataSource() {
-    let reports = this.state.reports;
+ /*
+  * Used to set the value of [this.state.reportsDataSource].
+  */
+  setReportsDataSource(reports) {
     this.setState({
       reportsDataSource: this.state.reportsDataSource.cloneWithRows(reports)
     });
+  }
+
+  /*
+   * Add a report to the locally stored reports.
+   */
+  receiveReport(report) {
+    this.setReports(this._reports.concat(report));
+  }
+
+  /*
+   * Remove a locally stored report.
+   */
+  removeReport(report) {
+    this.setReports(this._reports.filter((r) => r.id != report.id));
+  }
+
+  /*
+   * Update a locally stored report by id.
+   */
+  updateReport(report) {
+    this.setReports(this._reports.forEach((r) => {
+      r = r.id == report.id ? report : r;
+    }));
   }
 
   handleRegionChange(region) {
@@ -104,7 +112,7 @@ class NearMe extends Component {
     });
   }
 
-  handleCoordsChange(coords) {
+  setCurrentCoords(coords) {
     this.setState({
       currentCoords: coords
     });
@@ -124,15 +132,18 @@ class NearMe extends Component {
         style={styles.map}
         initialRegion={this.state.currentRegion}
         showsUserLocation={true}
-        followsUserLocation={false}
+        followsUserLocation={true}
         showsMyLocationButton={true}
         onRegionChangeComplete={(region) => {this.handleRegionChange(region)}}>
         {this.state.reports.map((report, i) => (
           <MapView.Marker
             key={i}
             title={report.name}
-            coordinate={report}>
-            <Emoji name="sushi" />
+            coordinate={report}
+            zIndex={0}>
+            <View style={styles.marker}>
+              {this.renderEmoji({emoji: report.foodtype})}
+            </View>
           </MapView.Marker>
         ))}
         {this.renderSearchRadius()}
@@ -146,24 +157,29 @@ class NearMe extends Component {
     return <MapView.Circle
           key={(center.longitude + center.latitude).toString()}
           center={center}
-          radius={this.state.searchRadius * 1609.34}
+          radius={this.state.searchRadius * 1000}
           strokeColor="rgb(85, 172, 238)"
-          fillColor="rgba(85, 172, 238, 0.2)"
+          fillColor="rgba(85, 172, 238, 0.08)"
         />
+  }
+
+  renderEmoji({emoji}) {
+      if (!emoji) {
+          emoji = 'truck';
+      }
+      return <Emoji name={emoji} />
   }
 
   renderListView({ renderScrollComponent }) {
     if (this.state.reportsDataSource) {
       return <ListView
+        key="list"
         dataSource={this.state.reportsDataSource}
         enableEmptySections={true}
         renderRow={(rowData) => (
-          <View key={rowData} style={styles.row}>
-            <Text style={styles.rowText}>
-              <Emoji name="sushi" />
-              {rowData.name}
-            </Text>
-          </View>
+          <ReportRow
+            report={rowData}
+            currentCoords={this.state.currentCoords} />
         )}
         renderScrollComponent={() =>
           renderScrollComponent
@@ -199,7 +215,6 @@ class NearMe extends Component {
 
 var currentRequest = null;
 
-const ROW_HEIGHT = 44;
 const PARALLAX_HEADER_HEIGHT = 300;
 
 var { width, height } = Dimensions.get('window');
@@ -222,17 +237,21 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
-  row: {
-    overflow: 'hidden',
-    paddingHorizontal: 10,
-    height: ROW_HEIGHT,
+  marker: {
+    width: 30,
+    height: 30,
     backgroundColor: 'white',
-    borderColor: '#ededed',
-    borderBottomWidth: 1,
-    justifyContent: 'center'
-  },
-  rowText: {
-    fontSize: 18
+    borderRadius: 30,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 0
+    },
+    shadowRadius: 3,
+    shadowOpacity: 0.2
   }
 });
 
