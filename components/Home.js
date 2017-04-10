@@ -16,10 +16,10 @@ class Home extends Component {
           backgroundColor: '#55acee'
         },
         right: (
-          <Button color='#fff' title='Report' onPress={() => navigate('CreateReport')}/>
+          <Button color='#55acee' title='Report' onPress={() => navigate('CreateReport')}/>
         ),
         left: (
-          <Button color='#fff' title='Sign Out' onPress={() => state.params.signOut() }/>
+          <Button color='#55acee' title='AccountView' onPress={() => navigate('AccountView')}/>
         )
       }),
     };
@@ -43,6 +43,7 @@ class Home extends Component {
   create = () => {
     this.props.navigation.navigate('AccountView')
   }
+
 
   render() {
     return (
