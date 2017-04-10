@@ -40,7 +40,7 @@ export default class destinationDelicious extends Component {
           //Get the current time
           let now = Date.now()
 
-          //Go back 5 minutes
+          //Go back 10 minutes
           checkTime = now - 10 * 60 * 1000
 
           if(checkTime > childData.timestamp ) {
