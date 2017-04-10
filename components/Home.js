@@ -44,7 +44,10 @@ class Home extends Component {
     this.props.navigation.navigate('AccountView')
   }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/DD-14
   render() {
     return (
       <HomeTabs/>
