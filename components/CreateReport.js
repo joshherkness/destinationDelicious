@@ -30,25 +30,32 @@ class CreateReport extends Component {
     }
   }
 
-  report=()=>{
-    ReportService.createReport({
-      name: this.state.name,
-      longitude: this.state.longitude,
-      latitude: this.state.latitude,
-      description: this.state.description,
-      foodtype: this.state.foodtype
-    });
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          this.setState({
-              longitude: position.coords.longitude,
-              latitude: position.coords.latitude
-          });
-        });
-      }
-
+  create = () => {
+    this.props.navigation.navigate('Home')
   }
+
+
+  report=()=>{
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.setState({
+          longitude: position.coords.longitude,
+          latitude: position.coords.latitude
+        }, () => {
+          ReportService.createReport({
+            name: this.state.name,
+            longitude: this.state.longitude,
+            latitude: this.state.latitude,
+            description: this.state.description,
+            foodtype: this.state.foodtype
+          });
+          Alert.alert("Cart Reported Successfully");
+          this.props.navigation.goBack(null);
+        });
+      });
+    }
+  }
+
 
 
 
