@@ -3,10 +3,6 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { HomeTabs } from '../config/router';
 import * as firebase from 'firebase';
 
-import { HomeTabs } from '../config/router';
-import * as firebase from 'firebase';
-
-
 class AccountView extends Component{
 
 static navigationOptions = {
@@ -27,13 +23,6 @@ static navigationOptions = {
       }),
     };
 
-    tabBar: {
-      label: 'Account Settings',
-      left: (
-                <Button color='#55acee' title='Sign Out' onPress={() => state.params.signOut() }/>
-              )
-    }
-
      constructor(props) {
         super(props);
       }
@@ -43,11 +32,6 @@ static navigationOptions = {
             <View style={ styles.container }>
 
               <Text style={ styles.bigFont }>Account View Screen</Text>
-
-              <Text style={ styles.bigFont }>Account View Screen</Text>
-
-              <Text style={ styles.bigFont }>AccountView Screen</Text>
-
             </View>
           )
         }
