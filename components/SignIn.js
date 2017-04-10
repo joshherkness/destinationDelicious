@@ -24,7 +24,7 @@ class SignIn extends Component {
     .catch(function(error) {
       let errorCode = error.code
       let errorMessage = error.message;
-      if(Object.is(errorCode, 'auth/weak-password')) {
+      if(errorCode === 'auth/weak-password') {
         Alert.alert('The password is too weak')
       } else {
         Alert.alert(errorMessage)
