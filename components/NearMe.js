@@ -6,6 +6,7 @@ import Emoji from 'react-native-emoji';
 import ReportService from '../services/ReportService';
 import ReportRow from './ReportRow';
 
+var watchId;
 
 class NearMe extends Component {
 
@@ -50,14 +51,33 @@ class NearMe extends Component {
         }, (report) => {
           this.removeReport(report);
         }, (report) => {
-          console.log("Report Moved");
+          this.updateReport(report);
         });
       })
-      navigator.geolocation.watchPosition((position) => {
-        this.setCurrentCoords(position.coords);
-      });
+
+      let options = {
+        enableHighAccuracy: false,
+        timeout: 5000,
+        maximumAge: 0
+      };
+      if (!watchId) {
+        watchId = navigator.geolocation.watchPosition(
+          (position) => {
+            this.setCurrentCoords(position.coords);
+          }, (error) => {
+            console.log(error);
+          }, options
+        );
+      }
     } else {
       // User should be sent a message.
+    }
+  }
+
+  componentWillUnmount() {
+    if (watchId) {
+      navigator.geolocation.clearWatch(watchId);
+      watchId = null;
     }
   }
 
@@ -68,15 +88,19 @@ class NearMe extends Component {
     this._reports = reports;
     this.setState({
       reports: reports,
-    }, () => this.setReportsDataSource(reports));
+    }, () => this.setReportsDataSource(reports, this.state.currentCoords));
   }
 
  /*
   * Used to set the value of [this.state.reportsDataSource].
   */
-  setReportsDataSource(reports) {
+  setReportsDataSource(reports, currentCoords) {
+    var rows = reports.map((report) => { return {
+      report: report,
+      currentCoords: currentCoords
+    }});
     this.setState({
-      reportsDataSource: this.state.reportsDataSource.cloneWithRows(reports)
+      reportsDataSource: this.state.reportsDataSource.cloneWithRows(rows)
     });
   }
 
@@ -84,6 +108,7 @@ class NearMe extends Component {
    * Add a report to the locally stored reports.
    */
   receiveReport(report) {
+    //this.removeReport(report);
     this.setReports(this._reports.concat(report));
   }
 
@@ -91,7 +116,11 @@ class NearMe extends Component {
    * Remove a locally stored report.
    */
   removeReport(report) {
-    this.setReports(this._reports.filter((r) => r.id != report.id));
+    while (this._reports.findIndex((r) => r.id == report.id) != -1) {
+      let index = this._reports.findIndex((r) => r.id == report.id);
+      this._reports.splice(index, 1);
+      this.setReports(this._reports);
+    }
   }
 
   /*
@@ -104,7 +133,7 @@ class NearMe extends Component {
   }
 
   handleRegionChange(region) {
-    this.setState({
+    this.setCurrentRegion({
       longitude: region.longitude,
       latitude: region.latitude,
       longitudeDelta: region.longitudeDelta,
@@ -112,10 +141,30 @@ class NearMe extends Component {
     });
   }
 
-  setCurrentCoords(coords) {
+  setCurrentRegion(region) {
     this.setState({
-      currentCoords: coords
+      currentRegion: region 
     });
+  }
+
+  setCurrentCoords(coords) {
+
+    // Check to ensure that the coords have infact changed
+    if ( this.state.currentCoords !== null && 
+        coords.longitude == this.state.currentCoords.longitude &&
+        coords.latitude == this.state.currentCoords.latitude) {
+      return;
+    }
+
+    this.setState({
+      currentCoords: {
+        longitude: coords.longitude,
+        latitude: coords.latitude
+      }
+    }, () => {
+      this.setReportsDataSource(this.state.reports, coords)
+    });
+    
 
     if (this.query) {
       this.query.updateCriteria({
@@ -173,14 +222,14 @@ class NearMe extends Component {
   renderListView({ renderScrollComponent }) {
     if (this.state.reportsDataSource) {
       return <ListView
-        key="list"
         dataSource={this.state.reportsDataSource}
         enableEmptySections={true}
-        renderRow={(rowData) => (
+        renderRow={(rowData, sectionId, rowId) => 
           <ReportRow
-            report={rowData}
-            currentCoords={this.state.currentCoords} />
-        )}
+            key={rowId}
+            report={rowData.report}
+            currentCoords={rowData.currentCoords} />
+        }
         renderScrollComponent={() =>
           renderScrollComponent
         }

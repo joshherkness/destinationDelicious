@@ -44,8 +44,9 @@ class ReportRow extends Component {
   }
 
   renderDistance() {
+    let distance = Number.parseInt(this.getDistance());
     if (this.state.currentCoords) {
-      return <Text style={styles.distance}>{Number.parseInt(this.getDistance())} m</Text>
+      return <Text style={styles.distance}>{distance} m</Text>
     }
     return null;
   }
