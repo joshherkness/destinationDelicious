@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry } from 'react-native';
+import { AppRegistry, StatusBar } from 'react-native';
 import * as firebase from "firebase";
 import Firebase from "./config/firebase";
 import Authentication from './components/Authentication'
@@ -11,6 +11,7 @@ export default class destinationDelicious extends Component {
     this.state = {
       user: undefined
     }
+    StatusBar.setBarStyle('light-content', true);
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.setState({

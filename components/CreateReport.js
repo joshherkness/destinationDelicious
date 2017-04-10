@@ -6,10 +6,13 @@ class CreateReport extends Component {
   static navigationOptions = {
     title: 'Create Report',
     header: {
-      tintColor: '#55acee',
+      tintColor: '#fff',
       titleStyle: {
-        color: '#000'
+        color: '#fff'
       },
+      style: {
+        backgroundColor: '#55acee'
+      }
     }
   };
 
