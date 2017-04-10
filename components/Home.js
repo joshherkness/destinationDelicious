@@ -16,10 +16,10 @@ class Home extends Component {
           backgroundColor: '#55acee'
         },
         right: (
-          <Button color='#fff' title='Report' onPress={() => navigate('CreateReport')}/>
+          <Button color='#201f35' title='Report' onPress={() => navigate('CreateReport')}/>
         ),
         left: (
-          <Button color='#fff' title='Sign Out' onPress={() => state.params.signOut() }/>
+          <Button color='#201f35' title='Sign Out' onPress={() => state.params.signOut() }/>
         )
       }),
     };

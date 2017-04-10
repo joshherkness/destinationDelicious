@@ -1,83 +1,45 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
-import { AppRegistry, Alert, StyleSheet, Text, View } from 'react-native';
-import * as firebase from 'firebase';
-import SignIn from './components/SignIn'
-import SignUp from './components/SignUp'
-
-//Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyCdndiS6rlCzlORIn5oQ4m5oPL9jsV0AhE",
-  authDomain: "destination-delicious.firebaseapp.com",
-  databaseURL: "https://destination-delicious.firebaseio.com",
-  projectId: "destination-delicious",
-  storageBucket: "destination-delicious.appspot.com",
- messagingSenderId: "26242783843"
-}
-
-const firebaseApp = firebase.initializeApp(firebaseConfig)
+import { AppRegistry, StatusBar } from 'react-native';
+import * as firebase from "firebase";
+import Firebase from "./config/firebase";
+import Authentication from './components/Authentication'
+import { Root } from './config/router';
 
 export default class destinationDelicious extends Component {
   constructor() {
-    super()
+    super();
     this.state = {
-      signUp: false
+      user: undefined
     }
-  }
-
-  verifyAuthState = (verify) => {
-    this.setState({
-      signUp: verify
-    })
-  }
-
-  checkSignIn() {
-    if(this.state.signUp === true) {
-      return (
-        <View style={styles.container}>
-          <Text style={ styles.welcome }>
-          Welcome to Destination Delicious!
-          </Text>
-          <SignUp firebase={ firebaseApp } verifyAuthState={ this.verifyAuthState } />
-        </View>
-      )
-    } else {
-      return (
-        <View style={styles.container}>
-          <Text style={styles.welcome}>
-            Welcome to Destination Delicious!
-          </Text>
-          <SignIn firebase={ firebaseApp } verifyAuthState={ this.verifyAuthState } />
-        </View>
-      )
-    }
+    StatusBar.setBarStyle('light-content', true);
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({
+          user: user
+        })
+      } else {
+        this.setState({
+          user: null
+        })
+      }
+    });
   }
 
   render() {
-    return (
-      this.checkSignIn()
-    );
+    if (this.state.user === undefined) {
+      return(
+        null
+      )
+    } else if (this.state.user) {
+      return(
+        <Root/>
+      );
+    } else {
+      return(
+        <Authentication/>
+      );
+    }
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-  },
-
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  }
-});
 
 AppRegistry.registerComponent('destinationDelicious', () => destinationDelicious);
