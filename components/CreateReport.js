@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, View, Image } from 'react-native';
 import * as firebase from "firebase";
+import ReportService from '../services/ReportService';
 
 
 class CreateReport extends Component {
@@ -20,12 +21,38 @@ class CreateReport extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      name: '',
-      food: '',
-      menu: '',
+    this.state={
+      name:null,
+      longitude:null,
+      latitude:null,
+      description:null,
+      foodtype:null,
     }
   }
+
+  report=()=>{
+    ReportService.createReport({
+      name: this.state.name,
+      longitude: this.state.longitude,
+      latitude: this.state.latitude,
+      description: this.state.description,
+      foodtype: this.state.foodtype
+    });
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          this.setState({
+              longitude: position.coords.longitude,
+              latitude: position.coords.latitude
+          });
+        });
+      }
+
+  }
+
+
+
+
 
   render() {
     return (
@@ -33,6 +60,8 @@ class CreateReport extends Component {
         <Text style={ styles.bigFont }>Report Cart</Text>
         <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.name } placeholder="Cart Name" onChangeText={ (name) => this.setState({name}) } />
         <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.food } placeholder="Food Type" onChangeText={ (food) => this.setState({food}) } />
+        <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.description } placeholder="Description" onChangeText={ (description) => this.setState({description}) } />
+        <Button onPress={ this.report} title="Report Cart" color="#55acee"/>
       </View>
     )
   }
@@ -60,6 +89,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 10
   },
+
 });
 
 module.exports = CreateReport
