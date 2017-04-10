@@ -17,6 +17,6 @@ export const HomeTabs = TabNavigator({
 
 export const Root = StackNavigator({
   Home: { screen: Home },
-  CreateReport: { screen: CreateReport }
+  CreateReport: { screen: CreateReport },
   AccountView: {screen: AccountView}
 });
