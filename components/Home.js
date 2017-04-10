@@ -32,18 +32,6 @@ class Home extends Component {
     firebase.auth().signOut()
   }
 
-  componentDidMount() {
-    this.props.navigation.setParams({ signOut: this.signOut });
-  }
-
-  create = () => {
-    this.props.navigation.navigate('CreateReport')
-  }
-
-  create = () => {
-    this.props.navigation.navigate('AccountView')
-  }
-
   render() {
     return (
       <HomeTabs/>

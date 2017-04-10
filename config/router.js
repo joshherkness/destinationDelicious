@@ -4,6 +4,7 @@ import Favorites from '../components/Favorites';
 import NearMe from '../components/NearMe';
 import Home from '../components/Home';
 import CreateReport from '../components/CreateReport';
+import AccountView from '../components/AccountView';
 
 export const HomeTabs = TabNavigator({
   NearMe: { screen: NearMe },
@@ -17,4 +18,5 @@ export const HomeTabs = TabNavigator({
 export const Root = StackNavigator({
   Home: { screen: Home },
   CreateReport: { screen: CreateReport }
+  AccountView: {screen: AccountView}
 });
