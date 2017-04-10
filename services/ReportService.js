@@ -18,7 +18,8 @@ class ReportService {
       description: report.description,
       foodtype: report.foodtype,
       longitude: report.longitude,
-      latitude: report.latitude
+      latitude: report.latitude,
+      timestamp: report.timestamp
     });
 
     // Add the report key and location to geofire so we can do lookups quickly
