@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ListView, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, ListView, ScrollView, Dimensions, Alert } from 'react-native';
 import MapView from 'react-native-maps';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import Emoji from 'react-native-emoji';
 import ReportService from '../services/ReportService';
 import ReportRow from './ReportRow';
 
+/*
+ * Id used to track the geolocation position watching.
+ */
 var watchId;
+
+/*
+ * List used to keep track of reports.
+ */
+var _reports;
 
 class NearMe extends Component {
 
@@ -19,20 +27,17 @@ class NearMe extends Component {
   constructor(props) {
     super(props);
 
-    this._reports = []
-
     // Create the initial state for component.
     this.state = {
-      searchRadius: 1.60934,
-      currentCoords: null,
-      currentRegion: null,
-      reports: this._reports,
-      reportsDataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }),
-      isListeningForReports: false
+      reportsDataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     }
   }
 
   componentWillMount() {
+
+    this.setSearchRadius(1.60934);
+    this.setReports([]);
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         let longitude = position.coords.longitude;
@@ -70,10 +75,13 @@ class NearMe extends Component {
         );
       }
     } else {
-      // User should be sent a message.
+      Alert.alert("Opps...  We can't find your location.  Please make sure your location services are enabled.");
     }
   }
 
+  /*
+   * Called before the component will unmount.
+   */
   componentWillUnmount() {
     if (watchId) {
       navigator.geolocation.clearWatch(watchId);
@@ -85,23 +93,25 @@ class NearMe extends Component {
    * Used to set the value of [this.state.reports].
    */
   setReports(reports) {
-    this._reports = reports;
+    _reports = reports;
     this.setState({
       reports: reports,
-    }, () => this.setReportsDataSource(reports, this.state.currentCoords));
+    }, this.setReportsDataSource(reports, this.state.currentCoords));
   }
 
  /*
   * Used to set the value of [this.state.reportsDataSource].
   */
   setReportsDataSource(reports, currentCoords) {
-    var rows = reports.map((report) => { return {
-      report: report,
-      currentCoords: currentCoords
-    }});
-    this.setState({
-      reportsDataSource: this.state.reportsDataSource.cloneWithRows(rows)
-    });
+    if (reports && currentCoords) {
+      var rows = reports.map((report) => { return {
+        report: report,
+        currentCoords: currentCoords
+      }});
+      this.setState({
+        reportsDataSource: this.state.reportsDataSource.cloneWithRows(rows)
+      });
+    }
   }
 
   /*
@@ -109,17 +119,17 @@ class NearMe extends Component {
    */
   receiveReport(report) {
     //this.removeReport(report);
-    this.setReports(this._reports.concat(report));
+    this.setReports(_reports.concat(report));
   }
 
   /*
    * Remove a locally stored report.
    */
   removeReport(report) {
-    while (this._reports.findIndex((r) => r.id == report.id) != -1) {
-      let index = this._reports.findIndex((r) => r.id == report.id);
-      this._reports.splice(index, 1);
-      this.setReports(this._reports);
+    while (_reports.findIndex((r) => r.id == report.id) != -1) {
+      let index = _reports.findIndex((r) => r.id == report.id);
+      _reports.splice(index, 1);
+      this.setReports(_reports);
     }
   }
 
@@ -127,7 +137,7 @@ class NearMe extends Component {
    * Update a locally stored report by id.
    */
   updateReport(report) {
-    this.setReports(this._reports.forEach((r) => {
+    this.setReports(_reports.forEach((r) => {
       r = r.id == report.id ? report : r;
     }));
   }
@@ -141,16 +151,35 @@ class NearMe extends Component {
     });
   }
 
+  /*
+   * Set the current region of the [react-native-map].
+   */
   setCurrentRegion(region) {
     this.setState({
       currentRegion: region 
     });
   }
 
+  /*
+   * Set the search radius used to fetch the reports.
+   */
+  setSearchRadius(radius) {
+    this.setState({
+      searchRadius: radius
+    });
+
+    // Update the current geofire query, if one exists.
+    if (this.query) {
+      this.query.updateCriteria({
+        radius: radius
+      });
+    }
+  }
+
   setCurrentCoords(coords) {
 
     // Check to ensure that the coords have infact changed
-    if ( this.state.currentCoords !== null && 
+    if ( this.state.currentCoords && 
         coords.longitude == this.state.currentCoords.longitude &&
         coords.latitude == this.state.currentCoords.latitude) {
       return;
@@ -168,16 +197,14 @@ class NearMe extends Component {
 
     if (this.query) {
       this.query.updateCriteria({
-        radius: this.state.searchRadius,
         center: [coords.latitude, coords.longitude]
       });
     }
   }
 
   renderMapView(props) {
-    if (this.state.currentRegion) {
+    if (this.state.currentRegion && this.state.reports) {
       return <MapView
-        key={(this.state.currentRegion).toString() + (this.state.reports).toString()}
         style={styles.map}
         initialRegion={this.state.currentRegion}
         showsUserLocation={true}
@@ -203,13 +230,18 @@ class NearMe extends Component {
 
   renderSearchRadius(props) {
     let center = this.state.currentCoords;
-    return <MapView.Circle
+    let radius = this.state.searchRadius;
+
+    if (center && radius) {
+      return <MapView.Circle
           key={(center.longitude + center.latitude).toString()}
           center={center}
-          radius={this.state.searchRadius * 1000}
+          radius={radius * 1000}
           strokeColor="rgb(85, 172, 238)"
           fillColor="rgba(85, 172, 238, 0.08)"
         />
+    }
+    return null;
   }
 
   renderEmoji({emoji}) {
@@ -222,6 +254,7 @@ class NearMe extends Component {
   renderListView({ renderScrollComponent }) {
     if (this.state.reportsDataSource) {
       return <ListView
+        id="list"
         dataSource={this.state.reportsDataSource}
         enableEmptySections={true}
         renderRow={(rowData, sectionId, rowId) => 
