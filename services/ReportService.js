@@ -4,35 +4,42 @@ const geofire = require('geofire');
 const geofireRef = new geofire(firebase.database().ref("geofire"))
 const reportsRef = firebase.database().ref("reports")
 
-  reportsRef.on('value', function(data) {
-      reportsRef.once("value")
-      .then(function(snapshot) {
-        snapshot.forEach(function(childSnapshot) {
-          // childData will be the actual contents of the child
-          let key = childSnapshot.key;
-          let childData = childSnapshot.val();
+/*
+ * This will remove stale locations and reports
+ * from the database
+ */
+reportsRef.on('value', function(data) {
+  reportsRef.once("value")
+  .then(function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+      // childData will be the actual contents of the child
+      let childData = childSnapshot.val();
 
-          //Get the current time
-          let now = Date.now()
+      //Go back 10 minutes
+      staleness = Date.now() - 10 * 60 * 1000
 
-          //Go back 10 minutes
-          checkTime = now - 10 * 60 * 1000
-
-          if(checkTime > childData.timestamp ) {
-            firebase.database().ref("reports/" + key).remove()
-            .then(function() {
-              console.log("Remove succeeded.")
-            })
-            .catch(function(error) {
-              console.log("Remove failed: " + error.message)
-            });
-          }
+      if(staleness > childData.timestamp ) {
+        firebase.database().ref("reports/" + childSnapshot.key).remove()
+        .then(function() {
+          console.log("Remove report succeeded.")
+          firebase.database().ref("geofire/" + childSnapshot.key).remove()
+          .then(function() {
+            console.log("Remove location succeeded.")
+          })
+          .catch(function(error) {
+            console.log("Remove location failed: " + error.message)
+          });
+        })
+        .catch(function(error) {
+          console.log("Remove report failed: " + error.message)
         });
-      })
-      .catch(function(error) {
-        console.log(error)
-      });
+      }
+    });
+  })
+  .catch(function(error) {
+    console.log(error)
   });
+});
 
 class ReportService {
 
