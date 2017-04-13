@@ -6,7 +6,7 @@ class AccountView extends Component {
 
   static navigationOptions = {
     title: 'Account View',
-    header: {
+    header: ({ navigate, state }) => ({
       tintColor: '#fff',
       titleStyle: {
         color: '#fff'
@@ -15,9 +15,9 @@ class AccountView extends Component {
         backgroundColor: '#55acee'
       },
       right: (
-                <Button color='#55acee' title='Sign Out' onPress={() => state.params.signOut() }/>
-                )
-    }
+        <Button color='#55acee' title='Sign Out' onPress={() => state.params.signOut() }/>
+      )
+    })
   };
 
   constructor(props) {
@@ -25,12 +25,12 @@ class AccountView extends Component {
   }
 
   componentDidMount() {
-      this.props.navigation.setParams({ signOut: this.signOut });
-    }
+    this.props.navigation.setParams({ signOut: this.signOut });
+  }
 
  signOut() {
-      firebase.auth().signOut()
-    }
+   firebase.auth().signOut()
+ }
 
   render() {
     return (
