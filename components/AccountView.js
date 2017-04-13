@@ -15,7 +15,7 @@ class AccountView extends Component {
         backgroundColor: '#55acee'
       },
       right: (
-                <Button color='#55acee' title='Sign Out' onPress={() => this.signOut() }/>
+                <Button color='#55acee' title='Sign Out' onPress={() => state.params.signOut() }/>
                 )
     }
   };
@@ -24,7 +24,11 @@ class AccountView extends Component {
     super(props);
   }
 
-  signOut() {
+  componentDidMount() {
+      this.props.navigation.setParams({ signOut: this.signOut });
+    }
+
+ signOut() {
       firebase.auth().signOut()
     }
 

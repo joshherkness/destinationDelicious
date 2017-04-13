@@ -9,7 +9,7 @@ class CreateReport extends Component {
       tintColor: '#fff',
       titleStyle: {
         color: '#fff'
-      }git,
+      },
       style: {
         backgroundColor: '#55acee'
       }
