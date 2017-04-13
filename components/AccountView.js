@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View, Button} from 'react-native';
+import * as firebase from 'firebase';
 
 class AccountView extends Component {
 
@@ -12,13 +13,20 @@ class AccountView extends Component {
       },
       style: {
         backgroundColor: '#55acee'
-      }
+      },
+      right: (
+                <Button color='#55acee' title='Sign Out' onPress={() => this.signOut() }/>
+                )
     }
   };
 
   constructor(props) {
     super(props);
   }
+
+  signOut() {
+      firebase.auth().signOut()
+    }
 
   render() {
     return (

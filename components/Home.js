@@ -28,10 +28,6 @@ class Home extends Component {
     super(props);
   }
 
-  signOut() {
-    firebase.auth().signOut()
-  }
-
   render() {
     return (
       <HomeTabs/>
