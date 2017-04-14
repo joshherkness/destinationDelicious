@@ -77,6 +77,7 @@ class ReportService {
    * @param {Function} removed
    */
   static getReports(params, entered, exited, moved) {
+    
     var geoQuery = geofireRef.query({
       center: [params.latitude, params.longitude],
       radius: params.radius
@@ -99,6 +100,8 @@ class ReportService {
         moved(report)
       });
     });
+
+    return geoQuery;
   }
 
   /**
@@ -108,7 +111,9 @@ class ReportService {
    */
   static getReport(id, callback) {
     firebase.database().ref('/reports/' + id).once('value').then(function(snapshot) {
-      callback(snapshot.val());
+      let report = snapshot.val();
+      report.id = id;
+      callback(report);
     });
   }
 }
