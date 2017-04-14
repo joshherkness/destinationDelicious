@@ -10,7 +10,7 @@ class ReportRow extends Component {
 
     this.state = {
       report: null,
-      currentCoords: null
+      location: null
     }
   }
 
@@ -18,8 +18,8 @@ class ReportRow extends Component {
     if (this.props.report) {
       this.setReport(this.props.report);
     }
-    if (this.props.currentCoords) {
-      this.setCurrentCoords(this.props.currentCoords);
+    if (this.props.location) {
+      this.setLocation(this.props.location);
     }
   }
 
@@ -29,23 +29,23 @@ class ReportRow extends Component {
     });
   }
 
-  setCurrentCoords(coords) {
+  setLocation(location) {
     this.setState({
-      currentCoords: coords
+      location: location
     });
   }
 
   getDistance() {
     let report = this.state.report;
-    let currentCoords = this.state.currentCoords;
-    let distance = geofire.distance([report.latitude, report.longitude],[currentCoords.latitude, currentCoords.longitude]);
+    let location = this.state.location;
+    let distance = geofire.distance([report.latitude, report.longitude],[location.latitude, location.longitude]);
 
     return distance * 1000;
   }
 
   renderDistance() {
     let distance = Number.parseInt(this.getDistance());
-    if (this.state.currentCoords) {
+    if (this.state.location) {
       return <Text style={styles.distance}>{distance} m</Text>
     }
     return null;

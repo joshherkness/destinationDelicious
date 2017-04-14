@@ -5,16 +5,23 @@ import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import Emoji from 'react-native-emoji';
 import ReportService from '../services/ReportService';
 import ReportRow from './ReportRow';
-
-/*
- * Id used to track the geolocation position watching.
- */
-var watchId;
+import LocationService from '../services/LocationService';
+import {Observable} from 'rxjs';
 
 /*
  * List used to keep track of reports.
  */
 var _reports;
+
+/*
+ * Subscription to watch the location of the device.
+ */
+var watchLocationSubscription;
+
+/*
+ * Query used to update the reports based on location.
+ */
+var geofireQuery;
 
 class NearMe extends Component {
 
@@ -38,54 +45,61 @@ class NearMe extends Component {
     this.setSearchRadius(1.60934);
     this.setReports([]);
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        let longitude = position.coords.longitude;
-        let latitude = position.coords.latitude;
+    let locationOptions = {
+      enableHighAccuracy: false,
+      timeout: 5000,
+      maximumAge: 0
+    };
+
+    LocationService.getCurrentLocation(locationOptions)
+      .subscribe((loc) => {
         this.setState({
-          currentCoords: position.coords,
-          currentRegion: {
-            longitude: longitude,
-            latitude: latitude,
+          location: loc,
+          region: {
+            longitude: loc.longitude,
+            latitude: loc.latitude,
             longitudeDelta: 0.1,
             latitudeDelta: 0.1 * ASPECT_RATIO
           }
         });
-        this.query = ReportService.getReports({ longitude: this.state.currentCoords.longitude, latitude: this.state.currentCoords.latitude, radius: this.state.searchRadius }, (report) => {
+        geofireQuery = ReportService.getReports({ 
+          longitude: loc.longitude, 
+          latitude: loc.latitude, 
+          radius: this.state.searchRadius }, 
+        (report) => {
           this.receiveReport(report);
         }, (report) => {
           this.removeReport(report);
         }, (report) => {
           this.updateReport(report);
         });
-      })
+      },
+      (err) => {
+        console.log(err)
+      });
 
-      let options = {
-        enableHighAccuracy: false,
-        timeout: 5000,
-        maximumAge: 0
-      };
-      if (!watchId) {
-        watchId = navigator.geolocation.watchPosition(
-          (position) => {
-            this.setCurrentCoords(position.coords);
-          }, (error) => {
-            console.log(error);
-          }, options
-        );
-      }
-    } else {
-      Alert.alert("Opps...  We can't find your location.  Please make sure your location services are enabled.");
-    }
+    watchLocationSubscription = LocationService.watchLocation(locationOptions)
+      .subscribe((loc) => {
+        this.setLocation(loc);
+      }, 
+      (err) => {
+        console.log(err);
+      });
   }
 
   /*
-   * Called before the component will unmount.
+   * Called when the component will unmount.
    */
   componentWillUnmount() {
-    if (watchId) {
-      navigator.geolocation.clearWatch(watchId);
-      watchId = null;
+    
+    // If a location subscription exists, unsubscribe from it.
+    if (watchLocationSubscription) {
+      watchLocationSubscription.unsubscribe();
+    }
+
+    // If a geofire query exitst, cancel it.
+    if (geofireQuery) {
+      geofireQuery.cancel();
     }
   }
 
@@ -96,17 +110,17 @@ class NearMe extends Component {
     _reports = reports;
     this.setState({
       reports: reports,
-    }, this.setReportsDataSource(reports, this.state.currentCoords));
+    }, this.setReportsDataSource(reports, this.state.location));
   }
 
  /*
   * Used to set the value of [this.state.reportsDataSource].
   */
-  setReportsDataSource(reports, currentCoords) {
-    if (reports && currentCoords) {
+  setReportsDataSource(reports, location) {
+    if (reports && location) {
       var rows = reports.map((report) => { return {
         report: report,
-        currentCoords: currentCoords
+        location: location
       }});
       this.setState({
         reportsDataSource: this.state.reportsDataSource.cloneWithRows(rows)
@@ -142,21 +156,12 @@ class NearMe extends Component {
     }));
   }
 
-  handleRegionChange(region) {
-    this.setCurrentRegion({
-      longitude: region.longitude,
-      latitude: region.latitude,
-      longitudeDelta: region.longitudeDelta,
-      latitudeDelta: region.latitudeDelta * ASPECT_RATIO
-    });
-  }
-
   /*
    * Set the current region of the [react-native-map].
    */
-  setCurrentRegion(region) {
+  setRegion(region) {
     this.setState({
-      currentRegion: region 
+      region: region 
     });
   }
 
@@ -169,48 +174,44 @@ class NearMe extends Component {
     });
 
     // Update the current geofire query, if one exists.
-    if (this.query) {
-      this.query.updateCriteria({
+    if (geofireQuery) {
+      geofireQuery.updateCriteria({
         radius: radius
       });
     }
   }
 
-  setCurrentCoords(coords) {
+  setLocation(location) {
 
     // Check to ensure that the coords have infact changed
-    if ( this.state.currentCoords && 
-        coords.longitude == this.state.currentCoords.longitude &&
-        coords.latitude == this.state.currentCoords.latitude) {
+    if ( this.state.location && 
+        location.longitude == this.state.location.longitude &&
+        location.latitude == this.state.location.latitude) {
       return;
     }
 
     this.setState({
-      currentCoords: {
-        longitude: coords.longitude,
-        latitude: coords.latitude
-      }
+      location: location
     }, () => {
-      this.setReportsDataSource(this.state.reports, coords)
+      this.setReportsDataSource(this.state.reports, location)
     });
     
 
-    if (this.query) {
-      this.query.updateCriteria({
-        center: [coords.latitude, coords.longitude]
+    if (geofireQuery) {
+      geofireQuery.updateCriteria({
+        center: [location.latitude, location.longitude]
       });
     }
   }
 
   renderMapView(props) {
-    if (this.state.currentRegion && this.state.reports) {
+    if (this.state.region && this.state.reports) {
       return <MapView
         style={styles.map}
-        initialRegion={this.state.currentRegion}
+        initialRegion={this.state.region}
         showsUserLocation={true}
         followsUserLocation={true}
-        showsMyLocationButton={true}
-        onRegionChangeComplete={(region) => {this.handleRegionChange(region)}}>
+        showsMyLocationButton={true}>
         {this.state.reports.map((report, i) => (
           <MapView.Marker
             key={i}
@@ -229,7 +230,7 @@ class NearMe extends Component {
   }
 
   renderSearchRadius(props) {
-    let center = this.state.currentCoords;
+    let center = this.state.location;
     let radius = this.state.searchRadius;
 
     if (center && radius) {
@@ -261,7 +262,7 @@ class NearMe extends Component {
           <ReportRow
             key={rowId}
             report={rowData.report}
-            currentCoords={rowData.currentCoords} />
+            location={rowData.location} />
         }
         renderScrollComponent={() =>
           renderScrollComponent
@@ -287,15 +288,13 @@ class NearMe extends Component {
 
   render() {  
 
-    if (!this.state.currentCoords) {
+    if (!this.state.location) {
       return null;
     }
 
     return this.renderListView({ renderScrollComponent: this.renderParallaxScrollView({ renderForeground: this.renderMapView() }) });
   }
 }
-
-var currentRequest = null;
 
 const PARALLAX_HEADER_HEIGHT = 300;
 
