@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Button} from 'react-native';
+import { StyleSheet, Platform, Button} from 'react-native';
 import { HomeTabs } from '../config/router';
 import * as firebase from 'firebase';
 
@@ -16,28 +16,15 @@ class Home extends Component {
           backgroundColor: '#55acee'
         },
         right: (
-          <Button color='#fff' title='Report' onPress={() => navigate('CreateReport')}/>
-        ),
-        left: (
-          <Button color='#fff' title='Sign Out' onPress={() => state.params.signOut() }/>
+          <Button title='Report' 
+                  color={(Platform.OS === 'ios') ? '#fff' : '#000'}
+                  onPress={() => navigate('CreateReport')}/>
         )
       }),
     };
 
   constructor(props) {
     super(props);
-  }
-
-  signOut() {
-    firebase.auth().signOut()
-  }
-
-  componentDidMount() {
-    this.props.navigation.setParams({ signOut: this.signOut });
-  }
-
-  create = () => {
-    this.props.navigation.navigate('CreateReport')
   }
 
   render() {
