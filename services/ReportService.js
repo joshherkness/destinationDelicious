@@ -112,8 +112,10 @@ class ReportService {
   static getReport(id, callback) {
     firebase.database().ref('/reports/' + id).once('value').then(function(snapshot) {
       let report = snapshot.val();
-      report.id = id;
-      callback(report);
+      if (report) {
+        report.id = id;
+        callback(report);
+      }
     });
   }
 }
