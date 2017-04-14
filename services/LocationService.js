@@ -1,48 +1,76 @@
 import Location from '../models/Location';
+import { Observable } from 'rxjs';
 
-/*
- * Wrapper for navigator.geolocation
+
+/**
+ * Rxjs wrapper for navigator.geolocation
+ * 
+ * @class LocationService
  */
 class LocationService {
 
-    /*
-     * Promise to retrieve the current position of the device.
-     */
-    static getCurrentPosition(options) {
-        return new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition((position)=> {
-                let location = new Location(
-                    position.coords.longitude,
-                    position.coords.latitude,
-                    position.timestamp
-                );
-                resolve(location);
-            }, reject, options);
-        });
-    }
+  /**
+   * Creates an RX observable which will observe the
+   * location of the current device.  An error will be returned
+   * if the location cannot be retrieved.
+   * 
+   * @static
+   * @param {any} options 
+   * @returns 
+   * 
+   * @memberOf LocationService
+   */
+  static getCurrentLocation(options) {
+    return Observable.create((observer) => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          // Create the location object from the position.
+          let loc = new Location(
+            pos.coords.longitude,
+            pos.coords.latitude,
+            pos.timestamp
+          );
+          observer.next(loc);
+        },
+        (err) => {
+          observer.error(err);
+        }, options);
+    });
+  }
 
-    /*
-     * Promise to watch the current position of the device.
-     */
-    static watchPosition(options) {
-        return new Promise((resolve, reject) => {
-            var watchId = navigator.geolocation.getCurrentPosition((position)=> {
-                let location = new Location(
-                    position.coords.longitude,
-                    position.coords.latitude,
-                    position.timestamp
-                );
-                resolve(location, watchId);
-            }, reject, options);
-        });
-    }
+  /**
+   * Creates an RX observable which will watch the location of 
+   * the current device.  An error will be returned if the loc-
+   * ation cannot be retrieved.
+   * 
+   * @static
+   * @param {any} options 
+   * @returns 
+   * 
+   * @memberOf LocationService
+   */
+  static watchLocation(options) {
+    return Observable.create((observer) => {
+      var watchId = navigator.geolocation.watchPosition(
+        (pos) => {
+          // Create the location object from the position.
+          let loc = new Location(
+            pos.coords.longitude,
+            pos.coords.latitude,
+            pos.timestamp
+          );
+          observer.next(loc)
+        },
+        (err) => {
+          observer.error(err);
+        }, options);
 
-    /*
-     * Clear a watch given a watch id.
-     */
-    static clearWatch(watchId) {
-        return navigator.geolocation.clearWatch(watchId);
-    }
+      return () => {
+        // Called upon unsubscribe.
+        navigator.geolocation.clearWatch(watchId);
+      };
+    }).publish().refCount();
+  }
 }
 
 module.exports = LocationService; 
