@@ -41,7 +41,7 @@ class SignIn extends Component {
   render() {
     return (
       <View style={ styles.container }>
-        <TextInput underlineColorAndroid='transparent' autoCapitalize='none' style={ styles.email } value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
+        <TextInput keyboardType='email-address' underlineColorAndroid='transparent' autoCapitalize='none' style={ styles.email } value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
         <TextInput style={ styles.password } value={ this.state.password }  placeholder="Password" onChangeText={ (password) => this.setState({password}) } secureTextEntry={ true }/>
         <Button onPress={ this.attemptLogin } title="Sign In" color="#55acee"/>
         <View style={{ flexDirection: 'row' }}>
