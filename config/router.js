@@ -8,7 +8,7 @@ import AccountView from '../components/AccountView';
 
 export const HomeTabs = TabNavigator({
   NearMe: { screen: NearMe },
-  Favorites: { screen: Favorites }
+  Profile: { screen: AccountView },
 }, {
   tabBarOptions: {
     activeTintColor: '#55acee'

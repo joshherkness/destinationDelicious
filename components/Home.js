@@ -19,11 +19,6 @@ class Home extends Component {
           <Button title='Report' 
                   color={(Platform.OS === 'ios') ? '#fff' : '#000'}
                   onPress={() => navigate('CreateReport')}/>
-        ),
-        left: (
-          <Button title='AccountView'
-                  color={(Platform.OS === 'ios') ? '#fff' : '#000'}
-                  onPress={() => navigate('AccountView')}/>
         )
       }),
     };

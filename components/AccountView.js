@@ -5,16 +5,9 @@ import * as firebase from 'firebase';
 class AccountView extends Component {
 
   static navigationOptions = {
-    title: 'Account View',
-    header: ({ navigate }) => ({
-      tintColor: '#fff',
-      titleStyle: {
-        color: '#fff'
-      },
-      style: {
-        backgroundColor: '#55acee'
-      }
-    })
+    tabBar: {
+      label: 'Profile'
+    }
   };
 
   constructor(props) {
