@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button} from 'react-native';
+import { StyleSheet, Platform, Text, View, Button} from 'react-native';
 import * as firebase from 'firebase';
 
 class AccountView extends Component {
@@ -15,7 +15,9 @@ class AccountView extends Component {
         backgroundColor: '#55acee'
       },
       right: (
-        <Button color='#55acee' title='Sign Out' onPress={() => state.params.signOut() }/>
+        <Button title='Sign Out'
+                color={(Platform.OS === 'ios') ? '#fff' : '#000'}
+                onPress={() => state.params.signOut() }/>
       )
     })
   };
@@ -47,7 +49,6 @@ const styles = StyleSheet.create({
      alignItems: 'center',
      paddingTop: 5
   },
-
   bigFont: {
     marginTop: 10,
     color: '#000000',

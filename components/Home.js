@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Button} from 'react-native';
+import { StyleSheet, Platform, Button} from 'react-native';
 import { HomeTabs } from '../config/router';
 import * as firebase from 'firebase';
 
@@ -16,10 +16,14 @@ class Home extends Component {
           backgroundColor: '#55acee'
         },
         right: (
-          <Button color='#55acee' title='Report' onPress={() => navigate('CreateReport')}/>
+          <Button title='Report' 
+                  color={(Platform.OS === 'ios') ? '#fff' : '#000'}
+                  onPress={() => navigate('CreateReport')}/>
         ),
         left: (
-          <Button color='#55acee' title='AccountView' onPress={() => navigate('AccountView')}/>
+          <Button title='AccountView'
+                  color={(Platform.OS === 'ios') ? '#fff' : '#000'}
+                  onPress={() => navigate('AccountView')}/>
         )
       }),
     };
