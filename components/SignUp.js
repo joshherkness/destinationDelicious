@@ -49,7 +49,7 @@ class SignUp extends Component {
   render() {
     return (
       <View style={ styles.container }>
-        <TextInput autoCapitalize='none' style={ styles.email } value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
+        <TextInput keyboardType='email-address' autoCapitalize='none' style={ styles.email } value={ this.state.username } placeholder="Email" onChangeText={ (username) => this.setState({username}) } />
         <TextInput style={ styles.password } value={ this.state.password }  placeholder="Password" onChangeText={ (password) => this.setState({password}) } secureTextEntry={ true }/>
         <TextInput style={ styles.password } value={ this.state.confirmPassword }  placeholder="Confirm Password" onChangeText={ (confirmPassword) => this.setState({confirmPassword}) } secureTextEntry={ true }/>
         <Button onPress={ this.attemptLogin } title="Sign Up" color="#55acee"/>
