@@ -6,28 +6,19 @@ class AccountView extends Component {
 
   static navigationOptions = {
     title: 'Account View',
-    header: ({ navigate, state }) => ({
+    header: ({ navigate }) => ({
       tintColor: '#fff',
       titleStyle: {
         color: '#fff'
       },
       style: {
         backgroundColor: '#55acee'
-      },
-      right: (
-        <Button title='Sign Out'
-                color={(Platform.OS === 'ios') ? '#fff' : '#000'}
-                onPress={() => state.params.signOut() }/>
-      )
+      }
     })
   };
 
   constructor(props) {
     super(props);
-  }
-
-  componentDidMount() {
-    this.props.navigation.setParams({ signOut: this.signOut });
   }
 
  signOut() {
@@ -37,7 +28,11 @@ class AccountView extends Component {
   render() {
     return (
       <View style={ styles.container }>
-        <Text style={ styles.bigFont }>Account View Screen</Text>
+        <View style={styles.signOutButton}>
+          <Button title='Sign Out'
+                  color='white'
+                  onPress={() => this.signOut()}/>
+        </View>
       </View>
     )
   }
@@ -45,14 +40,15 @@ class AccountView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-     flexDirection: 'column',
-     alignItems: 'center',
-     paddingTop: 5
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    paddingTop: 5
   },
-  bigFont: {
-    marginTop: 10,
-    color: '#000000',
-    fontSize: 30
+  signOutButton: {
+    backgroundColor: '#db4437',
+    margin: 10,
+    borderRadius: 5,
+    overflow: 'hidden'
   }
 });
 
