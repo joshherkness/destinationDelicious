@@ -66,7 +66,7 @@ class ReportDetail extends Component {
    * Called when the component will unmount.
    */
   componentWillUnmount() {
-    
+
     // If a location subscription exists, unsubscribe from it.
     if (watchLocationSubscription) {
       watchLocationSubscription.unsubscribe();

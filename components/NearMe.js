@@ -61,7 +61,7 @@ class NearMe extends Component {
 
     let locationOptions = {
       enableHighAccuracy: true,
-      timeout: 200,
+      timeout: 250,
       maximumAge: 0,
       distanceFilter: 1
     };
@@ -226,8 +226,7 @@ class NearMe extends Component {
         initialRegion={this.state.region}
         showsUserLocation={true}
         followsUserLocation={true}
-        showsMyLocationButton={true}
-        onRegionChange={(region) => this.setRegion(region)}>
+        showsMyLocationButton={true}>
         {this.state.reports.map((report, i) => (
           <MapView.Marker
             key={i}
@@ -239,7 +238,7 @@ class NearMe extends Component {
             </View>
           </MapView.Marker>
         ))}
-        {/*{this.renderSearchRadius()}*/}
+        {this.renderSearchRadius()}
       </MapView>
     }
     return null;
