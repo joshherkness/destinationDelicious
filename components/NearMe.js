@@ -222,7 +222,6 @@ class NearMe extends Component {
   renderMapView(props) {
     if (this.state.region && this.state.reports) {
       return <MapView
-        ref = { (MapRef) => { if( MapRef !=null ) MapRef.fitToElements(false) }}
         style={styles.map}
         initialRegion={this.state.region}
         showsUserLocation={true}
