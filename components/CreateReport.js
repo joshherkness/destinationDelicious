@@ -38,7 +38,7 @@ class CreateReport extends Component {
   create() {
 
     let locationOptions = {
-      enableHighAccuracy: true,
+      enableHighAccuracy: false,
       timeout: 5000,
       maximumAge: 0
     };
