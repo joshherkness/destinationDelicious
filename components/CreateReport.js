@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, View, Image } from 'react-native';
 import * as firebase from "firebase";
+import Report from '../models/Report'
 import ReportService from '../services/ReportService';
 
 
@@ -40,14 +41,13 @@ class CreateReport extends Component {
           longitude: position.coords.longitude,
           latitude: position.coords.latitude
         }, () => {
-          ReportService.createReport({
-            name: this.state.name,
-            longitude: this.state.longitude,
-            latitude: this.state.latitude,
-            description: this.state.description,
-            foodtype: this.state.foodtype,
-            timestamp: Date.now()
-          });
+          
+          report = new Report(this.state.name, this.state.longitude,
+           this.state.latitude, this.state.description, this.state.foodtype,
+           Date.now());
+
+          ReportService.createReport(report);
+
           Alert.alert("Cart Reported Successfully");
           this.props.navigation.goBack(null);
         });
@@ -83,11 +83,12 @@ const styles = StyleSheet.create({
 
   input: {
     alignSelf: 'stretch',
+    backgroundColor: '#FFF',
     borderColor: '#E0E0E0',
     borderWidth: 1,
     borderRadius: 3,
     height: 40,
-    marginBottom: 10,
+    margin: 10,
     paddingLeft: 10
   },
 
