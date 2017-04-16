@@ -269,7 +269,6 @@ class NearMe extends Component {
   renderListView({ renderScrollComponent }) {
     if (this.state.reportsDataSource) {
       return <ListView
-        id="list"
         dataSource={this.state.reportsDataSource}
         enableEmptySections={true}
         renderRow={(rowData, sectionId, rowId) => 

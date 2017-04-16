@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Emoji from 'react-native-emoji';
-
-const geofire = require('geofire');
+import Location from '../models/Location';
+import LocationService from '../services/LocationService';
 
 class ReportRow extends Component {
   constructor(props) {
@@ -14,15 +14,12 @@ class ReportRow extends Component {
     }
   }
 
-  componentWillReceiveProps() {
-    if (this.props.report) {
-      this.setReport(this.props.report);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.report) {
+      this.setReport(nextProps.report);
     }
-    if (this.props.location) {
-      this.setLocation(this.props.location);
-    }
-    if (this.props.onClick) {
-      this.onClick = onClick;
+    if (nextProps.location) {
+      this.setLocation(nextProps.location);
     }
   }
 
@@ -38,18 +35,10 @@ class ReportRow extends Component {
     });
   }
 
-  getDistance() {
-    let report = this.state.report;
-    let location = this.state.location;
-    let distance = geofire.distance([report.latitude, report.longitude],[location.latitude, location.longitude]);
-
-    return distance * 1000;
-  }
-
   renderDistance() {
-    let distance = Number.parseInt(this.getDistance());
+    let distance = LocationService.distanceBetween(new Location(this.state.report.longitude, this.state.report.latitude, this.state.report.timestamp), this.state.location);
     if (this.state.location) {
-      return <Text style={styles.distance}>{distance} m</Text>
+      return <Text style={styles.distance}>{Number.parseInt(distance)} m</Text>
     }
     return null;
   }
