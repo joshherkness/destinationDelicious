@@ -8,6 +8,11 @@ import ReportService from '../services/ReportService';
 import LocationService from '../services/LocationService';
 
 
+/*
+ * Subscription to watch the location of the device.
+ */
+var watchLocationSubscription;
+
 class ReportDetail extends Component {
 
   static navigationOptions = ({ navigation }) => {
@@ -55,6 +60,17 @@ class ReportDetail extends Component {
       (err) => {
         console.log(err);
       });
+  }
+
+  /*
+   * Called when the component will unmount.
+   */
+  componentWillUnmount() {
+    
+    // If a location subscription exists, unsubscribe from it.
+    if (watchLocationSubscription) {
+      watchLocationSubscription.unsubscribe();
+    }
   }
 
   setLocation(location) {
