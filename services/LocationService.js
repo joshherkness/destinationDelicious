@@ -1,6 +1,7 @@
 import Location from '../models/Location';
 import { Observable } from 'rxjs';
 
+const geofire = require('geofire');
 
 /**
  * Rxjs wrapper for navigator.geolocation
@@ -70,6 +71,24 @@ class LocationService {
         navigator.geolocation.clearWatch(watchId);
       };
     }).publish().refCount();
+  }
+
+  
+  /**
+   * Returns the distance between a start and end location in meters.
+   * 
+   * @static
+   * @param {Location} start 
+   * @param {Location} end 
+   * @returns 
+   * 
+   * @memberOf LocationService
+   */
+  static distanceBetween(start, end) {
+    // Distance in km
+    let distance = geofire.distance([start.latitude, start.longitude], [end.latitude, end.longitude]);
+    // Distance in m
+    return distance * 1000;
   }
 }
 

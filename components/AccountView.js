@@ -5,10 +5,18 @@ import AuthenticationService from '../services/AuthenticationService'
 
 class AccountView extends Component {
 
-  static navigationOptions = {
-    tabBar: {
-      label: 'Profile'
-    }
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Home',
+      tabBarLabel: 'Profile',
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        color: '#fff'
+      },
+      headerStyle: {
+        backgroundColor: '#55acee'
+      }
+    };
   };
 
   constructor(props) {
