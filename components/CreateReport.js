@@ -6,17 +6,17 @@ import ReportService from '../services/ReportService';
 
 class CreateReport extends Component {
 
-  static navigationOptions = {
-    title: 'Create Report',
-    header: {
-      tintColor: '#fff',
-      titleStyle: {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Create Report',
+      headerTintColor: '#fff',
+      headerTitleStyle: {
         color: '#fff'
       },
-      style: {
+      headerStyle: {
         backgroundColor: '#55acee'
       }
-    }
+    };
   };
 
   constructor(props) {

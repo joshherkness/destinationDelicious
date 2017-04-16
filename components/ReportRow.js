@@ -21,6 +21,9 @@ class ReportRow extends Component {
     if (this.props.location) {
       this.setLocation(this.props.location);
     }
+    if (this.props.onClick) {
+      this.onClick = onClick;
+    }
   }
 
   setReport(report) {
