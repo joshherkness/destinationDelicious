@@ -3,6 +3,7 @@ import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, View, Image } 
 import * as firebase from "firebase";
 import Report from '../models/Report'
 import ReportService from '../services/ReportService';
+import LocationService from '../services/LocationService';
 
 
 class CreateReport extends Component {
@@ -34,25 +35,25 @@ class CreateReport extends Component {
   }
 
 
-  report = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.setState({
-          longitude: position.coords.longitude,
-          latitude: position.coords.latitude
-        }, () => {
-          
-          report = new Report(this.state.name, this.state.longitude,
-           this.state.latitude, this.state.description, this.state.foodtype,
-           Date.now());
+  create() {
 
-          ReportService.createReport(report);
+    let locationOptions = {
+      enableHighAccuracy: false,
+      timeout: 5000,
+      maximumAge: 0
+    };
 
-          Alert.alert("Cart Reported Successfully");
-          this.props.navigation.goBack(null);
-        });
+    LocationService.getCurrentLocation(locationOptions)
+      .subscribe((loc) => {
+        report = new Report(this.state.name, loc.longitude,
+          loc.latitude, this.state.description, this.state.foodtype,
+          loc.timestamp);
+        ReportService.createReport(report);
+        this.props.navigation.goBack(null);
+      },
+      (err) => {
+        console.log(err)
       });
-    }
   }
 
   render() {
@@ -60,9 +61,9 @@ class CreateReport extends Component {
       <View style={ styles.container }>
         <Text style={ styles.bigFont }>Report Cart</Text>
         <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.name } placeholder="Cart Name" onChangeText={ (name) => this.setState({name}) } />
-        <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.food } placeholder="Food Type" onChangeText={ (food) => this.setState({food}) } />
+        <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.foodtype } placeholder="Food Type" onChangeText={ (foodtype) => this.setState({foodtype}) } />
         <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.description } placeholder="Description" onChangeText={ (description) => this.setState({description}) } />
-        <Button onPress={ this.report} title="Report Cart" color="#55acee"/>
+        <Button onPress={ this.create.bind(this) } title="Report Cart" color="#55acee"/>
       </View>
     )
   }

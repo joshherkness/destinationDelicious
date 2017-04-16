@@ -30,6 +30,9 @@ class ReportDetail extends Component {
     this.state = {
       location: null
     }
+  }
+
+  componentDidMount() {
 
     let locationOptions = {
       enableHighAccuracy: false,
