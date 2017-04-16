@@ -61,7 +61,7 @@ class NearMe extends Component {
 
     let locationOptions = {
       enableHighAccuracy: true,
-      timeout: 5000,
+      timeout: 250,
       maximumAge: 0,
       distanceFilter: 1
     };

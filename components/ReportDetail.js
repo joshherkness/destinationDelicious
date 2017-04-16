@@ -9,8 +9,8 @@ import LocationService from '../services/LocationService';
 
 
 /*
-* Subscription to watch the location of the device.
-*/
+ * Subscription to watch the location of the device.
+ */
 var watchLocationSubscription;
 
 class ReportDetail extends Component {
@@ -63,8 +63,8 @@ class ReportDetail extends Component {
   }
 
   /*
-  * Called when the component will unmount.
-  */
+   * Called when the component will unmount.
+   */
   componentWillUnmount() {
 
     // If a location subscription exists, unsubscribe from it.
