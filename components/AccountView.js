@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Platform, Text, View, Button} from 'react-native';
 import * as firebase from 'firebase';
+import AuthenticationService from '../services/AuthenticationService'
 
 class AccountView extends Component {
 
@@ -15,7 +16,7 @@ class AccountView extends Component {
   }
 
  signOut() {
-   firebase.auth().signOut()
+   AuthenticationService.signOut()
  }
 
   render() {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, View, Image } from 'react-native';
 import * as firebase from "firebase";
+import AuthenticationService from '../services/AuthenticationService'
 
 class SignUp extends Component {
   constructor(props) {
@@ -16,30 +17,18 @@ class SignUp extends Component {
     let email = this.state.username.toLowerCase()
     let pass = this.state.password
     let confirmPassword = this.state.confirmPassword
+
     // Check to make sure the passwords are the same length
     if (pass != confirmPassword) {
       Alert.alert('The passwords must be the same')
       return
     }
-    firebase.auth().createUserWithEmailAndPassword(email, pass)
-    .then(function(user) {
-      this.writeUserData(user.uid, email)
-    }.bind(this))
-    .catch(function(error) {
-      let errorCode = error.code
-      let errorMessage = error.message;
-      if(errorCode === 'auth/weak-password') {
-        Alert.alert('The password is too weak')
-      } else {
-        Alert.alert(errorMessage)
-      }
-    })
-  }
 
-  writeUserData(userId, email) {
-    firebase.database().ref('users/' + userId).set({
-      email: email
-    });
+    // Authenticate with the email and password
+    AuthenticationService.createUserWithEmailAndPassword(email, pass)
+    .catch(function(error) {
+      Alert.alert(error.message)
+    })
   }
 
   goToSignUp = () => {
