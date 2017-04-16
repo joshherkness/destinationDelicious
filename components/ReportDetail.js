@@ -5,6 +5,7 @@ import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import Emoji from 'react-native-emoji';
 import * as firebase from "firebase";
 import ReportService from '../services/ReportService';
+import LocationService from '../services/LocationService';
 
 
 class ReportDetail extends Component {
@@ -25,6 +26,46 @@ class ReportDetail extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      location: null
+    }
+
+    let locationOptions = {
+      enableHighAccuracy: false,
+      timeout: 5000,
+      maximumAge: 0
+    };
+
+    LocationService.getCurrentLocation(locationOptions)
+      .subscribe((loc) => {
+        this.setLocation(loc)
+      },
+      (err) => {
+        console.log(err)
+      });
+
+    watchLocationSubscription = LocationService.watchLocation(locationOptions)
+      .subscribe((loc) => {
+        this.setLocation(loc);
+      }, 
+      (err) => {
+        console.log(err);
+      });
+  }
+
+  setLocation(location) {
+
+    // Check to ensure that the coords have infact changed
+    if ( this.state.location && 
+        location.longitude == this.state.location.longitude &&
+        location.latitude == this.state.location.latitude) {
+      return;
+    }
+
+    this.setState({
+      location: location
+    });
   }
 
   renderMapView({ params }) {
@@ -32,6 +73,7 @@ class ReportDetail extends Component {
     let region = params.region;
     if (region && report) {
       return <MapView
+        ref = { (MapRef) => { if( MapRef !=null ) MapRef.fitToElements(false) }}
         style={styles.map}
         initialRegion={region}
         showsUserLocation={true}
@@ -78,7 +120,8 @@ class ReportDetail extends Component {
 
     let report = params.report;
 
-    if (report) {
+    if (report && this.state.location) {
+      let distance = LocationService.distanceBetween(report, this.state.location);
       return <View style={styles.container}>
         <ScrollView>
           {this.renderMapView({ params: params })}
@@ -92,6 +135,12 @@ class ReportDetail extends Component {
             <View style={styles.detailHeader}>
               <Text style={styles.detailTitle}>Food Type</Text>
               <Text style={styles.detailText}>{this.renderEmoji({ emoji: report.foodtype })}</Text>
+            </View>
+          </View>
+          <View style={styles.detailItem}>
+            <View style={styles.detailHeader}>
+              <Text style={styles.detailTitle}>Distance</Text>
+              <Text style={styles.detailText}>{Number.parseInt(distance)} meters</Text>
             </View>
           </View>
           <View style={styles.detailItem}>
