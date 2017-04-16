@@ -60,9 +60,10 @@ class NearMe extends Component {
     this.setReports([]);
 
     let locationOptions = {
-      enableHighAccuracy: false,
+      enableHighAccuracy: true,
       timeout: 5000,
-      maximumAge: 0
+      maximumAge: 0,
+      distanceFilter: 1
     };
 
     LocationService.getCurrentLocation(locationOptions)
