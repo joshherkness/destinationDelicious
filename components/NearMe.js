@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ListView, ScrollView, Dimensions, Alert } from 'react-native';
+import { StyleSheet, Text, View, ListView, ScrollView, 
+  Dimensions, Alert, TouchableOpacity, Button, Platform } from 'react-native';
 import MapView from 'react-native-maps';
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import Emoji from 'react-native-emoji';
@@ -25,11 +26,24 @@ var geofireQuery;
 
 class NearMe extends Component {
 
-  static navigationOptions = {
-    tabBar: {
-      label: 'Carts Near Me'
-    }
-  }
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Home',
+      tabBarLabel: 'Carts Near Me',
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        color: '#fff'
+      },
+      headerStyle: {
+        backgroundColor: '#55acee'
+      },
+      headerRight: (
+        <Button title='Report' 
+                color={(Platform.OS === 'ios') ? '#fff' : '#000'}
+                onPress={() => navigation.navigate('CreateReport')}/>
+      )
+    };
+  };
 
   constructor(props) {
     super(props);
@@ -207,6 +221,7 @@ class NearMe extends Component {
   renderMapView(props) {
     if (this.state.region && this.state.reports) {
       return <MapView
+        ref = { (MapRef) => { if( MapRef !=null ) MapRef.fitToElements(false) }}
         style={styles.map}
         initialRegion={this.state.region}
         showsUserLocation={true}
@@ -255,14 +270,24 @@ class NearMe extends Component {
   renderListView({ renderScrollComponent }) {
     if (this.state.reportsDataSource) {
       return <ListView
-        id="list"
         dataSource={this.state.reportsDataSource}
         enableEmptySections={true}
         renderRow={(rowData, sectionId, rowId) => 
-          <ReportRow
-            key={rowId}
-            report={rowData.report}
-            location={rowData.location} />
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('ReportDetail', {
+              report: rowData.report,
+              region: {
+               longitude: rowData.report.longitude,
+               latitude: rowData.report.latitude,
+               longitudeDelta: 0.1,
+               latitudeDelta: 0.1 * ASPECT_RATIO
+              }
+            })}>
+            <ReportRow
+              key={rowId}
+              report={rowData.report}
+              location={rowData.location}/>
+          </TouchableOpacity>
         }
         renderScrollComponent={() =>
           renderScrollComponent
