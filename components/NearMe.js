@@ -8,6 +8,7 @@ import ReportService from '../services/ReportService';
 import ReportRow from './ReportRow';
 import LocationService from '../services/LocationService';
 import {Observable} from 'rxjs';
+import FoodTypeService from '../services/FoodTypeService';
 
 /*
  * List used to keep track of reports.
@@ -234,7 +235,7 @@ class NearMe extends Component {
             coordinate={report}
             zIndex={0}>
             <View style={styles.marker}>
-              {this.renderEmoji({emoji: report.foodtype})}
+              {this.renderEmoji({type: report.foodtype})}
             </View>
           </MapView.Marker>
         ))}
@@ -260,10 +261,8 @@ class NearMe extends Component {
     return null;
   }
 
-  renderEmoji({emoji}) {
-      if (!emoji) {
-          emoji = 'truck';
-      }
+  renderEmoji({type}) {
+      var emoji = FoodTypeService.foodTypeFromType(type).emoji;
       return <Emoji name={emoji} />
   }
 

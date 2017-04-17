@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, View, Image } from 'react-native';
+import { Alert, AppRegistry, StyleSheet, Button, Text, TextInput, 
+  View, Image, TouchableOpacity, ScrollView } from 'react-native';
 import * as firebase from "firebase";
 import Report from '../models/Report'
 import ReportService from '../services/ReportService';
 import LocationService from '../services/LocationService';
+import FoodTypeService from '../services/FoodTypeService.js';
+import Emoji from 'react-native-emoji';
 
 
 class CreateReport extends Component {
@@ -26,12 +29,16 @@ class CreateReport extends Component {
 
     this.state = {
       name:null,
-      longitude:null,
-      latitude:null,
       description:null,
-      foodtype:null,
-      timestamp: null
+      foodtype: 'other',
+      foodTypes: FoodTypeService.getFoodTypes()
     }
+  }
+
+  setFoodType(foodType) {
+    this.setState({
+      foodtype: foodType
+    });
   }
 
 
@@ -59,9 +66,20 @@ class CreateReport extends Component {
   render() {
     return (
       <View style={ styles.container }>
-        <Text style={ styles.bigFont }>Report Cart</Text>
         <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.name } placeholder="Cart Name" onChangeText={ (name) => this.setState({name}) } />
-        <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.foodtype } placeholder="Food Type" onChangeText={ (foodtype) => this.setState({foodtype}) } />
+        <Text>Food type</Text>
+        <ScrollView
+          contentContainerStyle={styles.scrollView}>
+          {this.state.foodTypes.map((foodType, i) => (
+            <TouchableOpacity
+              key={foodType.type}
+              onPress={() => this.setState({foodtype: foodType.type})}>
+              <View style={this.state.foodtype == foodType.type ? styles.emojiCardHighlighted : styles.emojiCard}>
+                <Text style={styles.emoji}><Emoji name={foodType.emoji} /></Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
         <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.description } placeholder="Description" onChangeText={ (description) => this.setState({description}) } />
         <Button onPress={ this.create.bind(this) } title="Report Cart" color="#55acee"/>
       </View>
@@ -72,8 +90,8 @@ class CreateReport extends Component {
 const styles = StyleSheet.create({
   container: {
      flexDirection: 'column',
-     alignItems: 'center',
-     paddingTop: 5
+     alignItems: 'stretch',
+     padding: 10
   },
 
   bigFont: {
@@ -92,6 +110,37 @@ const styles = StyleSheet.create({
     margin: 10,
     paddingLeft: 10
   },
+  scrollView: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start'
+  },
+  emojiCard: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 5,
+    padding: 5
+  },
+  emojiCardHighlighted: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 5,
+    padding: 5,
+    backgroundColor: '#55acee'
+  },
+  emoji: {
+    fontSize: 20
+  }
 
 });
 
