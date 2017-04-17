@@ -26,11 +26,8 @@ class CreateReport extends Component {
 
     this.state = {
       name:null,
-      longitude:null,
-      latitude:null,
       description:null,
       foodtype:null,
-      timestamp: null
     }
   }
 
@@ -75,13 +72,11 @@ const styles = StyleSheet.create({
      alignItems: 'center',
      paddingTop: 5
   },
-
   bigFont: {
     marginTop: 10,
     color: '#000000',
     fontSize: 30
   },
-
   input: {
     alignSelf: 'stretch',
     backgroundColor: '#FFF',
@@ -91,8 +86,7 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 10,
     paddingLeft: 10
-  },
-
+  }
 });
 
 module.exports = CreateReport
