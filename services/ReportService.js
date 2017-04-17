@@ -2,6 +2,44 @@ import * as firebase from 'firebase';
 
 const geofire = require('geofire');
 const geofireRef = new geofire(firebase.database().ref("geofire"))
+const reportsRef = firebase.database().ref("reports")
+
+/*
+ * This will remove stale locations and reports
+ * from the database
+ */
+reportsRef.on('value', function(data) {
+  reportsRef.once("value")
+  .then(function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+      // childData will be the actual contents of the child
+      let childData = childSnapshot.val();
+
+      //Go back 10 minutes
+      staleness = Date.now() - 10 * 60 * 1000
+
+      if(staleness > childData.timestamp ) {
+        firebase.database().ref("reports/" + childSnapshot.key).remove()
+        .then(function() {
+          console.log("Remove report succeeded.")
+          firebase.database().ref("geofire/" + childSnapshot.key).remove()
+          .then(function() {
+            console.log("Remove location succeeded.")
+          })
+          .catch(function(error) {
+            console.log("Remove location failed: " + error.message)
+          });
+        })
+        .catch(function(error) {
+          console.log("Remove report failed: " + error.message)
+        });
+      }
+    });
+  })
+  .catch(function(error) {
+    console.log(error)
+  });
+});
 
 class ReportService {
 
@@ -18,7 +56,8 @@ class ReportService {
       description: report.description,
       foodtype: report.foodtype,
       longitude: report.longitude,
-      latitude: report.latitude
+      latitude: report.latitude,
+      timestamp: report.timestamp
     });
 
     // Add the report key and location to geofire so we can do lookups quickly
@@ -38,6 +77,7 @@ class ReportService {
    * @param {Function} removed
    */
   static getReports(params, entered, exited, moved) {
+    
     var geoQuery = geofireRef.query({
       center: [params.latitude, params.longitude],
       radius: params.radius
@@ -60,6 +100,8 @@ class ReportService {
         moved(report)
       });
     });
+
+    return geoQuery;
   }
 
   /**
@@ -69,7 +111,11 @@ class ReportService {
    */
   static getReport(id, callback) {
     firebase.database().ref('/reports/' + id).once('value').then(function(snapshot) {
-      callback(snapshot.val());
+      let report = snapshot.val();
+      if (report) {
+        report.id = id;
+        callback(report);
+      }
     });
   }
 }

@@ -4,6 +4,7 @@ import * as firebase from "firebase";
 import Firebase from "./config/firebase";
 import Authentication from './components/Authentication'
 import { Root } from './config/router';
+import AuthenticationService from './services/AuthenticationService'
 
 export default class destinationDelicious extends Component {
   constructor() {
@@ -11,18 +12,15 @@ export default class destinationDelicious extends Component {
     this.state = {
       user: undefined
     }
+
     StatusBar.setBarStyle('light-content', true);
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({
-          user: user
-        })
-      } else {
-        this.setState({
-          user: null
-        })
-      }
-    });
+
+    AuthenticationService.onAuthStateChanged()
+    .subscribe((user) => {
+      this.setState({
+        user: user
+      })
+    })
   }
 
   render() {
