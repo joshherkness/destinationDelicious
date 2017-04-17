@@ -8,7 +8,6 @@ import LocationService from '../services/LocationService';
 import FoodTypeService from '../services/FoodTypeService.js';
 import Emoji from 'react-native-emoji';
 
-
 class CreateReport extends Component {
 
   static navigationOptions = ({ navigation }) => {
@@ -70,6 +69,8 @@ class CreateReport extends Component {
         <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.name } placeholder="Cart Name" onChangeText={ (name) => this.setState({name}) } />
         <Text style={ styles.title }>What type of food do they serve?</Text>
         <ScrollView
+          snapToInterval={50}
+          style={{height: 200}}
           contentContainerStyle={styles.scrollView}>
           {this.state.foodTypes.map((foodType, i) => (
             <TouchableOpacity

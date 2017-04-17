@@ -2,6 +2,10 @@ class FoodTypeService {
 
   static foodTypes = [
     {
+      type: 'other',
+      emoji: ':truck:'
+    },
+    {
       type: 'grapes',
       emoji:':grapes:'
     },
@@ -54,30 +58,6 @@ class FoodTypeService {
       emoji:':strawberry:'
     },
     {
-      type: 'kiwi',
-      emoji:':kiwi:'
-    },
-    {
-      type: 'tomato',
-      emoji:':tomato:'
-    },
-    {
-      type: 'avocado',
-      emoji:':avocado:'
-    },
-    {
-      type: 'eggplant',
-      emoji:':eggplant:'
-    },
-    {
-      type: 'potato',
-      emoji:':potato:'
-    },
-    {
-      type: 'carrot',
-      emoji:':carrot:'
-    },
-    {
       type: 'corn',
       emoji:':corn:'
     },
@@ -86,32 +66,8 @@ class FoodTypeService {
       emoji:':hot_pepper:'
     },
     {
-      type: 'cucumber',
-      emoji:':cucumber:'
-    },
-    {
-      type: 'peanuts',
-      emoji:':peanuts:'
-    },
-    {
       type: 'bread',
       emoji:':bread:'
-    },
-    {
-      type: 'croissant',
-      emoji:':croissant:'
-    },
-    {
-      type: 'french_bread',
-      emoji:':french_bread:'
-    },
-    {
-      type: 'pancakes',
-      emoji:':pancakes:'
-    },
-    {
-      type: 'cheese',
-      emoji:':cheese:'
     },
     {
       type: 'meat_on_bone',
@@ -120,10 +76,6 @@ class FoodTypeService {
     {
       type: 'poultry_leg',
       emoji:':poultry_leg:'
-    },
-    {
-      type: 'bacon',
-      emoji:':bacon:'
     },
     {
       type: 'hamburger',
@@ -150,28 +102,12 @@ class FoodTypeService {
       emoji:':burrito:'
     },
     {
-      type: 'stuffed_flatbread',
-      emoji:':stuffed_flatbread:'
-    },
-    {
       type: 'egg',
       emoji:':egg:'
     },
     {
-      type: 'cooking',
-      emoji:':cooking:'
-    },
-    {
-      type: 'shallow_pan_of_food',
-      emoji:':shallow_pan_of_food:'
-    },
-    {
       type: 'stew',
       emoji:':stew:'
-    },
-    {
-      type: 'salad',
-      emoji:':salad:'
     },
     {
       type: 'popcorn',
@@ -276,14 +212,6 @@ class FoodTypeService {
     {
       type: 'honey_pot',
       emoji:':honey_pot:'
-    },
-    {
-      type: 'baby_bottle',
-      emoji:':baby_bottle:'
-    },
-    {
-      type: 'milk',
-      emoji:':milk:'
     },
     {
       type: 'coffee',
