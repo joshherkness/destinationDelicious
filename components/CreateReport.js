@@ -93,13 +93,11 @@ const styles = StyleSheet.create({
      alignItems: 'stretch',
      padding: 10
   },
-
   bigFont: {
     marginTop: 10,
     color: '#000000',
     fontSize: 30
   },
-
   input: {
     alignSelf: 'stretch',
     backgroundColor: '#FFF',
@@ -141,7 +139,6 @@ const styles = StyleSheet.create({
   emoji: {
     fontSize: 20
   }
-
 });
 
 module.exports = CreateReport
