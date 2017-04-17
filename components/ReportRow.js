@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Emoji from 'react-native-emoji';
 import Location from '../models/Location';
 import LocationService from '../services/LocationService';
+import FoodTypeService from '../services/FoodTypeService';
 
 class ReportRow extends Component {
   constructor(props) {
@@ -44,10 +45,7 @@ class ReportRow extends Component {
   }
 
   renderEmoji() {
-      let emoji = this.state.report.foodtype;
-      if (!emoji) {
-          emoji = 'truck';
-      }
+      var emoji = FoodTypeService.foodTypeFromType(this.state.report.foodtype).emoji;
       return <Emoji name={emoji} />
   }
 
@@ -55,7 +53,7 @@ class ReportRow extends Component {
     if (this.state.report) {
       return <View style={styles.container}>
         <Text style={styles.emoji}>
-          <Emoji name={this.state.report.foodtype || 'truck'} />
+          {this.renderEmoji()}
         </Text>
         <Text style={styles.name}>{this.state.report.name}</Text>
         {this.renderDistance()}

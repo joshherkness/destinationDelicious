@@ -6,6 +6,7 @@ import Emoji from 'react-native-emoji';
 import * as firebase from "firebase";
 import ReportService from '../services/ReportService';
 import LocationService from '../services/LocationService';
+import FoodTypeService from '../services/FoodTypeService';
 
 
 /*
@@ -104,7 +105,7 @@ class ReportDetail extends Component {
           title={report.name}
           coordinate={report}>
           <View style={styles.marker}>
-            {this.renderEmoji({ emoji: report.foodtype })}
+            {this.renderEmoji({ type: report.foodtype })}
           </View>
         </MapView.Marker>
       </MapView>
@@ -112,12 +113,11 @@ class ReportDetail extends Component {
     return null;
   }
 
-  renderEmoji({ emoji }) {
-    if (!emoji) {
-      emoji = 'truck';
-    }
-    return <Emoji name={emoji} />
-  }
+   renderEmoji({type}) {
+      var emoji = FoodTypeService.foodTypeFromType(type).emoji;
+      return <Emoji name={emoji} />
+   }
+
 
 
   /*
@@ -153,7 +153,7 @@ class ReportDetail extends Component {
           <View style={styles.detailItem}>
             <View style={styles.detailHeader}>
               <Text style={styles.detailTitle}>Food Type</Text>
-              <Text style={styles.detailText}>{this.renderEmoji({ emoji: report.foodtype })}</Text>
+              <Text style={styles.detailText}>{this.renderEmoji({ type: report.foodtype })}</Text>
             </View>
           </View>
           <View style={styles.detailItem}>
