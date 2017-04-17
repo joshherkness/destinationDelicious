@@ -52,9 +52,9 @@ class ReportService {
     var newReportKey = firebase.database().ref().child('reports').push().key;
     firebase.database().ref('reports/' + newReportKey).set({
       user: user.uid,
-      name: report.name,
-      description: report.description,
-      foodtype: report.foodtype,
+      name: report.name || "Unknown",
+      description: report.description || "None",
+      foodtype: report.foodtype || "other",
       longitude: report.longitude,
       latitude: report.latitude,
       timestamp: report.timestamp

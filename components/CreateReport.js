@@ -28,8 +28,8 @@ class CreateReport extends Component {
     super(props);
 
     this.state = {
-      name:null,
-      description:null,
+      name: null,
+      description: null,
       foodtype: 'other',
       foodTypes: FoodTypeService.getFoodTypes()
     }
@@ -66,8 +66,9 @@ class CreateReport extends Component {
   render() {
     return (
       <View style={ styles.container }>
+        <Text style={ styles.title }>What is the name of the cart?</Text>
         <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.name } placeholder="Cart Name" onChangeText={ (name) => this.setState({name}) } />
-        <Text>Food type</Text>
+        <Text style={ styles.title }>What type of food do they serve?</Text>
         <ScrollView
           contentContainerStyle={styles.scrollView}>
           {this.state.foodTypes.map((foodType, i) => (
@@ -80,7 +81,9 @@ class CreateReport extends Component {
             </TouchableOpacity>
           ))}
         </ScrollView>
-        <TextInput autoCapitalize='none' style={ styles.input } value={ this.state.description } placeholder="Description" onChangeText={ (description) => this.setState({description}) } />
+        <Text style={ styles.title }>Anything else you want to tell people?</Text>
+        <TextInput autoCapitalize='none' style={ [styles.input, styles.description] } value={ this.state.description } placeholder="Description" onChangeText={ (description) => this.setState({description}) } 
+          multiline={true} />
         <Button onPress={ this.create.bind(this) } title="Report Cart" color="#55acee"/>
       </View>
     )
@@ -91,7 +94,13 @@ const styles = StyleSheet.create({
   container: {
      flexDirection: 'column',
      alignItems: 'stretch',
-     padding: 10
+     padding: 10,
+     backgroundColor: 'white',
+     position: 'absolute',
+     top: 0,
+     bottom: 0,
+     left: 0,
+     right: 0
   },
   bigFont: {
     marginTop: 10,
@@ -99,16 +108,19 @@ const styles = StyleSheet.create({
     fontSize: 30
   },
   input: {
+    flex: 0,
     alignSelf: 'stretch',
     backgroundColor: '#FFF',
     borderColor: '#E0E0E0',
     borderWidth: 1,
-    borderRadius: 3,
+    borderRadius: 5,
     height: 40,
-    margin: 10,
-    paddingLeft: 10
+    margin: 5,
+    paddingLeft: 10,
+    fontSize: 18
   },
   scrollView: {
+    flex: 0,
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'flex-start'
@@ -122,7 +134,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: 5,
-    padding: 5
+    padding: 5,
+    borderColor: '#E0E0E0',
+    borderWidth: 1
   },
   emojiCardHighlighted: {
     width: 40,
@@ -137,7 +151,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#55acee'
   },
   emoji: {
-    fontSize: 20
+    fontSize: 20,
+    marginBottom: 3,
+    marginLeft: 3
+  },
+  title: {
+    margin: 5,
+    fontSize: 18,
+    fontWeight: '500'
+  },
+  description: {
+    flex: 100,
+    padding: 5
   }
 });
 
